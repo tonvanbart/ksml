@@ -78,7 +78,7 @@
         <maven.license.plugin.version>1.9</maven.license.plugin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <slf4j.version>1.7.30</slf4j.version>
+        <slf4j.version>1.7.32</slf4j.version>
 
         <!-- license properties -->
         <license.licensename>apache_v2</license.licensename>
