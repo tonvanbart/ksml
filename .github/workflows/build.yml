@@ -1,8 +1,7 @@
-name: Build
+name: Sonar build
 on:
   push:
     branches:
-      - master
       - github-actions-test
   pull_request:
     types: [opened, synchronize, reopened]
