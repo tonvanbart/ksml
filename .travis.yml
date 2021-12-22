@@ -3,5 +3,5 @@ language: minimal
 services:
   - docker
 
-docker-build:
+before-install:
   - docker build -t axual/ksml:testme -f Dockerfile-build-runner .
