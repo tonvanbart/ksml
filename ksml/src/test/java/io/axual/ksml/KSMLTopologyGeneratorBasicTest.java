@@ -51,7 +51,7 @@ import static org.junit.jupiter.api.Assertions.fail;
  */
 public class KSMLTopologyGeneratorBasicTest {
 
-//    @BeforeAll
+    @BeforeAll
     public static void checkGraalVM() {
         final var vendor = System.getProperty("java.vendor.url");
         if (vendor.indexOf("graalvm") == -1) {
@@ -59,7 +59,6 @@ public class KSMLTopologyGeneratorBasicTest {
         }
     }
 
-    @Disabled("Ignore for now to see if sonar scan works")
     @ParameterizedTest
     @ValueSource(ints = {1, 2, 3, 4, 5})
     public void parseAndCheckOuput(int nr) throws Exception {
