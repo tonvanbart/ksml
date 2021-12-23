@@ -24,6 +24,9 @@ jobs:
           jdkFile: ${{ runner.temp }}/graal_package.tar.gz
           java-version: '11'
           architecture: x64
+      - name: install GraalVM Python runtime
+        run: |
+          gu install python
       - name: Cache SonarCloud packages
         uses: actions/cache@v1
         with:
