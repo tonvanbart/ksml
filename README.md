@@ -1,4 +1,6 @@
 ![example branch parameter](https://github.com/tonvanbart/ksml/actions/workflows/github-actions-demo.yml/badge.svg?branch=github-actions-test)
+![example branch parameter](https://github.com/tonvanbart/ksml/actions/workflows/sonar-build.yml/badge.svg?branch=github-actions-test)
+
 Axual KSML
 --------
 
