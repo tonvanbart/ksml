@@ -13,10 +13,17 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
-      - name: Set up JDK 11
-        uses: actions/setup-java@v1
+      - name: download GraalVM
+        run: |
+          download_url="https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.3.0/graalvm-ce-java11-linux-amd64-21.3.0.tar.gz"
+          wget -O $RUNNER_TEMP/graal_package.tar.gz $download_url
+      - name: Set up GraalVM
+        uses: actions/setup-java@v2
         with:
-          java-version: 11
+          distribution: 'jdkfile'
+          jdkFile: ${{ runner.temp }}/graal_package.tar.gz
+          java-version: '11'
+          architecture: x64
       - name: Cache SonarCloud packages
         uses: actions/cache@v1
         with:
