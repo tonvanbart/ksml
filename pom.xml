@@ -55,6 +55,7 @@
         <module>ksml-query</module>
         <module>ksml-runner</module>
         <module>ksml-runner-axual</module>
+        <module>ksml-reporting</module>
     </modules>
 
     <properties>
@@ -76,6 +77,7 @@
         <maven.failsafe.version>2.22.2</maven.failsafe.version>
         <maven.install.version>3.0.0-M1</maven.install.version>
         <maven.license.plugin.version>1.9</maven.license.plugin.version>
+        <maven.jacoco.plugin.version>0.8.7</maven.jacoco.plugin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <slf4j.version>1.7.32</slf4j.version>
@@ -97,7 +99,7 @@
         <!-- Sonar for JACOCO-->
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
         <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
-        <sonar.jacoco.xmlReportPaths>ksml/target/site/jacoco/jacoco.xml</sonar.jacoco.xmlReportPaths>
+        <sonar.jacoco.xmlReportPaths>ksml-reporting/target/site/jacoco-aggregate/jacoco.xml</sonar.jacoco.xmlReportPaths>
     </properties>
 
     <dependencyManagement>
@@ -400,20 +402,27 @@
                 <plugin>
                     <groupId>org.jacoco</groupId>
                     <artifactId>jacoco-maven-plugin</artifactId>
-                    <version>0.8.7</version>
+                    <version>${maven.jacoco.plugin.version}</version>
                     <executions>
                         <execution>
-                            <id>prepare-agent</id>
+                            <id>pre-unit-test</id>
                             <goals>
                                 <goal>prepare-agent</goal>
                             </goals>
+                            <configuration>
+                                <propertyName>surefireArgLine</propertyName>
+                                <append>true</append>
+                            </configuration>
                         </execution>
                         <execution>
-                            <id>report</id>
-                            <phase>test</phase>
+                            <id>pre-integration-test</id>
                             <goals>
-                                <goal>report</goal>
+                                <goal>prepare-agent-integration</goal>
                             </goals>
+                            <configuration>
+                                <propertyName>failsafeArgLine</propertyName>
+                                <append>true</append>
+                            </configuration>
                         </execution>
                     </executions>
                 </plugin>
