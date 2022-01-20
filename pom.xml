@@ -62,7 +62,7 @@
         <apache.kafka.version>2.8.1</apache.kafka.version>
         <axual.version>5.8.1</axual.version>
         <commons.logging.version>1.1</commons.logging.version>
-        <graalvm.version>21.1.0</graalvm.version>
+        <graalvm.version>21.3.1</graalvm.version>
         <hamcrest.version>2.1</hamcrest.version>
         <jackson.version>2.11.1</jackson.version>
         <java.source.version>11</java.source.version>
