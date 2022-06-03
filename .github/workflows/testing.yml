@@ -8,10 +8,11 @@ jobs:
     steps:
       - name: print current github environment
         run: |
-          echo ${{ github }}
           echo github.ref is ${{ github.ref }}
           echo github.ref_name is ${{ github.ref_name }}
           echo github.ref_type is ${{ github.ref_type }}
+          echo '${{ toJSON(github) }}'
+          echo '${{ toJSON(job) }}'
 
       - name: set the version in env
         run: |
