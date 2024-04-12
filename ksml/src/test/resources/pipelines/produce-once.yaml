@@ -1,0 +1,24 @@
+streams:
+  dummy-input:
+    topic: dummy
+    keyType: string
+    valueType: string
+
+functions:
+  generate_fixed_data:
+    type: generator
+    code: |
+      key = "key1"
+      value = "value1"
+
+    expression: (key, value)
+    resultType: (string, string)
+
+producers:
+  test_data_producer:
+    generator: generate_fixed_data
+    interval: 1000
+    to:
+      topic: testoutput
+      keyType: string
+      valueType: string
