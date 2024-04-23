@@ -21,7 +21,6 @@ package io.axual.ksml.runner.backend;
  */
 
 import io.axual.ksml.data.object.DataBoolean;
-import io.axual.ksml.data.object.DataNull;
 import io.axual.ksml.data.object.DataObject;
 import io.axual.ksml.user.UserFunction;
 
@@ -35,13 +34,10 @@ public class UntilReschedule implements RescheduleStrategy {
 
     @Override
     public boolean shouldReschedule(DataObject key, DataObject value) {
-        if (DataNull.INSTANCE.equals(key) && DataNull.INSTANCE.equals(value)) {
-            // this is the first call, no data yet to decide on
-            return true;
-        }
         DataObject result = condition.call(key, value);
-        System.out.println("result = " + result);
-        if (result instanceof DataBoolean resultBoolean) return resultBoolean.value();
+
+        // Note: "until" should NOT reschedule if the predicate became true, negate the result!
+        if (result instanceof DataBoolean resultBoolean) return !(resultBoolean.value());
         throw new io.axual.ksml.data.exception.ExecutionException("Producer condition did not return a boolean value: " + condition.name);
     }
 }

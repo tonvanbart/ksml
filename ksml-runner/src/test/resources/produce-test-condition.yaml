@@ -21,12 +21,12 @@ functions:
     type: predicate
     code: |
       log.info("evaluating key={} value={}", key, value)
-    expression: value == "one"
+    expression: value == "two"  # stop producing after writing "two"
 
 producers:
   fixed_data_producer:
     generator: generate_indexed
-    interval: 20
+    interval: 50
     until: stop_produce
     to:
       topic: fixed_kv_cond

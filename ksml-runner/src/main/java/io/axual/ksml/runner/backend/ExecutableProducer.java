@@ -46,7 +46,7 @@ import java.util.concurrent.ExecutionException;
 import static io.axual.ksml.data.notation.UserType.DEFAULT_NOTATION;
 
 @Slf4j
-public class ExecutableProducer implements Scheduled {
+public class ExecutableProducer {
     private final UserFunction generator;
     private final UserFunction condition;
     private final String topic;
@@ -142,8 +142,8 @@ public class ExecutableProducer implements Scheduled {
                     var keyStr = key != null ? key.toString() : "null";
                     var valueStr = value != null ? value.toString() : "null";
 
-                    keyStr = keyStr.replaceAll("\n", "\\\\n");
-                    valueStr = valueStr.replaceAll("\n", "\\\\n");
+                    keyStr = keyStr.replace("\n", "\\\\n");
+                    valueStr = valueStr.replace("\n", "\\\\n");
                     log.info("Message: key={}, value={}", keyStr, valueStr);
 
                     var serializedKey = keySerializer.serialize(topic, nativeMapper.fromDataObject(key));
@@ -171,12 +171,18 @@ public class ExecutableProducer implements Scheduled {
         }
     }
 
-    @Override
+    /**
+     * Indicate if this instance wants to be rescheduled after its most recent run.
+     * @return true if should reschedule.
+     */
     public boolean shouldReschedule() {
         return rescheduleStrategy.shouldReschedule(lastKey, lastValue);
     }
 
-    @Override
+    /**
+     * Indicate the desired waiting time until the next reschedule.
+     * @return the desired wait until next run.
+     */
     public Duration interval() {
         return rescheduleStrategy.interval();
     }
