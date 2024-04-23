@@ -114,7 +114,7 @@ class KafkaProducerRunnerTest {
         // then when the runner has executed, only one record is produced.
         producerRunner.stop();
         log.info("history size={}", mockProducer.history().size());
-        assertEquals(3, mockProducer.history().size(), "should stop after producing 3 records");
+        assertEquals(2, mockProducer.history().size(), "should stop after producing second record");
     }
 
     /**

@@ -20,6 +20,7 @@ package io.axual.ksml.runner.backend;
  * =========================LICENSE_END==================================
  */
 
+import io.axual.ksml.data.object.DataNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -87,14 +88,14 @@ public class IntervalScheduleTest {
         assertNull(intervalSchedule.getScheduledItem(), "should return no more items at this point");
     }
 
-    record TestItem(String value, RescheduleStrategy rescheduleStrategy) implements RescheduleStrategy {
+    record TestItem(String value, RescheduleStrategy rescheduleStrategy) implements Scheduled {
         TestItem(String value, long interval) {
             this(value, RescheduleStrategy.always(Duration.ofMillis(interval)));
         }
 
         @Override
         public boolean shouldReschedule() {
-            return this.rescheduleStrategy.shouldReschedule();
+            return this.rescheduleStrategy.shouldReschedule(DataNull.INSTANCE, DataNull.INSTANCE);
         }
 
         @Override

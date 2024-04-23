@@ -34,10 +34,13 @@ public class UntilReschedule implements RescheduleStrategy {
     }
 
     @Override
-    public boolean shouldReschedule() {
-        // Currently predicate always expect two arguments for historic reasons; for now we inject two nulls (None)
-        // the predicate can use global vars in the code to make the decision.
-        DataObject result = condition.call(DataNull.INSTANCE, DataNull.INSTANCE);
+    public boolean shouldReschedule(DataObject key, DataObject value) {
+        if (DataNull.INSTANCE.equals(key) && DataNull.INSTANCE.equals(value)) {
+            // this is the first call, no data yet to decide on
+            return true;
+        }
+        DataObject result = condition.call(key, value);
+        System.out.println("result = " + result);
         if (result instanceof DataBoolean resultBoolean) return resultBoolean.value();
         throw new io.axual.ksml.data.exception.ExecutionException("Producer condition did not return a boolean value: " + condition.name);
     }
