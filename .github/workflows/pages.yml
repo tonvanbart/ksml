@@ -1,0 +1,59 @@
+# .github/workflows/pages.yml
+name: Build and Deploy GitHub Pages Site
+
+on:
+  push:
+    branches:
+      - copy-test-snippets  # or your default branch
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.11  # or another supported version
+
+      - name: Install PyYAML
+        run: pip install pyyaml
+
+      - name: Copy and edit YAML snippets
+        run: python scripts/extract_snippet.py
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Build with Jekyll
+        run: |
+          bundle config set --local path 'vendor/bundle'
+          bundle install
+          JEKYLL_ENV=production bundle exec jekyll build --source docs --destination _site
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

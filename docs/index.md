@@ -10,6 +10,19 @@ If you want to get going quickly, go to the KSML Quickstart.
 
 KSML allows anyone to specify a powerful Kafka Streams application in just a few lines of YAML and Python snippets.
 
+## Testing include:
+The following definition was copied from (../ksml/src/test/resources/pipelines/test-aggregate-inline.yaml)
+
+{% capture yaml_snippet %}
+{% include_relative _snippets/my-example.yaml %}
+{% endcapture %}
+
+```yaml
+{{ yaml_snippet }}
+```
+End of include
+
+
 ## Contents
 
 1. [Introduction](introduction.md)
