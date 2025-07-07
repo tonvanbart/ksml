@@ -2,15 +2,7 @@
 
 Welcome to the KSML documentation, Use the menu on the left to navigate through the various sections
 
-## Quick Start
-
-If you want to get going quickly, go to the KSML Quickstart.
-
-## Introduction
-
-KSML allows anyone to specify a powerful Kafka Streams application in just a few lines of YAML and Python snippets.
-
-## Testing include:
+## Testing an include:
 The following definition was copied from (../ksml/src/test/resources/pipelines/test-aggregate-inline.yaml)
 
 {% capture yaml_snippet %}
@@ -22,6 +14,13 @@ The following definition was copied from (../ksml/src/test/resources/pipelines/t
 ```
 End of include
 
+## Quick Start
+
+If you want to get going quickly, go to the KSML Quickstart.
+
+## Introduction
+
+KSML allows anyone to specify a powerful Kafka Streams application in just a few lines of YAML and Python snippets.
 
 ## Contents
 
