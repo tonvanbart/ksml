@@ -14,7 +14,7 @@ KSML allows anyone to specify a powerful Kafka Streams application in just a few
 The following definition was copied from (../ksml/src/test/resources/pipelines/test-aggregate-inline.yaml)
 
 {% capture yaml_snippet %}
-{% include_relative _snippets/my-example.yaml %}
+{% include_relative _snippets/test-aggregate-inline.yaml %}
 {% endcapture %}
 
 ```yaml
