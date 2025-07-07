@@ -3,7 +3,7 @@
 Welcome to the KSML documentation, Use the menu on the left to navigate through the various sections
 
 ## Testing an include:
-The following definition was copied from (../ksml/src/test/resources/pipelines/test-aggregate-inline.yaml)
+The following definition was copied from [source](../ksml/src/test/resources/pipelines/test-aggregate-inline.yaml)
 
 {% capture yaml_snippet %}
 {% include_relative _snippets/test-aggregate-inline.yaml %}
