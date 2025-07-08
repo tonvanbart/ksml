@@ -37,10 +37,14 @@ jobs:
         uses: actions/configure-pages@v5
 
       - name: Build with Jekyll
-        run: |
-          bundle config set --local path 'vendor/bundle'
-          bundle install
-          JEKYLL_ENV=production bundle exec jekyll build --source docs --destination _site
+        uses: actions/jekyll-build-pages@v1
+        with:
+          source: ./docs
+          destination: ./_site
+#        run: |
+#          bundle config set --local path 'vendor/bundle'
+#          bundle install
+#          JEKYLL_ENV=production bundle exec jekyll build --source docs --destination _site
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
