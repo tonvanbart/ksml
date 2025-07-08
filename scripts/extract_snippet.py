@@ -3,8 +3,8 @@ import os
 
 os.makedirs('docs/_snippets', exist_ok=True)
 
-source_dir = os.Path('ksml/src/test/resources/pipelines')
-target_dir = os.Path('docs/_snippets')
+source_dir = Path('ksml/src/test/resources/pipelines')
+target_dir = Path('docs/_snippets')
 
 pipelines = list(source_dir.glob("*.yaml"))
 for definition in pipelines:
