@@ -1,5 +1,8 @@
 import yaml
 import os
+import sys
+
+from pathlib import Path
 
 os.makedirs('docs/_snippets', exist_ok=True)
 
