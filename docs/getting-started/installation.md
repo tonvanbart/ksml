@@ -95,10 +95,10 @@ Now that you have a running environment, let's run a simple KSML application tha
 
 ### Step 1: Run the Example KSML Runner
 
-If you're using the Docker Compose setup, you can run the example KSML runner with:
+If you're using the Docker Compose setup, after building a local KSML image, you can run the example KSML runner with:
 
 ```bash
-./examples/run.sh
+./examples/run-local.sh
 ```
 
 This will start a KSML runner container that processes the example KSML definitions. You should see output similar to:
