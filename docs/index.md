@@ -13,12 +13,12 @@ KSML allows anyone to specify a powerful Kafka Streams application in just a few
 ## Contents
 
 1. [Introduction](introduction.md)
-2. [Stream Types](streams.md)
-3. [Functions](functions.md)
-4. [Pipelines](pipelines.md)
-5. [Operations](operations.md)
-6. [Data Types](types.md)
-7. [Runners](runners.md)
+2. [Stream Types](reference-docs/streams.md)
+3. [Functions](reference-docs/functions.md)
+4. [Pipelines](reference-docs/pipelines.md)
+5. [Operations](reference-docs/operations.md)
+6. [Data Types](reference-docs/types.md)
+7. [Runners](reference-docs/runners.md)
 8. [Language specification](ksml-language-spec.md)
 
 [Getting Started](quick-start)

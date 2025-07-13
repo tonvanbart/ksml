@@ -130,7 +130,7 @@ docker compose up -d
 Once the environment is up, you can run your KSML topology using the KSML runner and a KSML
 configuration file of your choice:
 
-1. For full details about the KSML configuration file, see the [KSML Runner documentation](docs/runners.md).
+1. For full details about the KSML configuration file, see the [KSML Runner documentation](docs/reference-docs/runners.md).
 2. For a locally running demo with an example KSML configuration file, please
    follow [Setting Up the Project for Local Development](https://github.com/Axual/ksml/blob/main/CONTRIBUTING.md).
 

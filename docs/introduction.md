@@ -24,7 +24,7 @@ only a few simple basic rules and Python snippets.
 ## Setting up a test environment
 
 To demonstrate KSML's capabilities, you will need a working Kafka cluster, or an Axual Platform/Cloud environment. Check
-out the [Runners](runners.md) page to configure KSML.
+out the [Runners](reference-docs/runners.md) page to configure KSML.
 <br>
 We set up a test topic, called `ksml_sensordata_avro` with key/value types of `String`/`SensorData`. The [SensorData]
 schema

@@ -1,0 +1,21 @@
+site_name: KSML
+site_author: Axual
+site_description: Documentation for the KSML project
+site_dir: _site
+theme: readthedocs
+
+nav:
+  - Home: index.md
+  - Introduction: introduction.md
+  - Quick start: quick-start.md
+  - Reference: reference-docs/
+#    - Streams: streams.md
+#    - Pipelines: pipelines.md
+#    - Types: types.md
+#    - Notations: notations.md
+#    - Operstions: operations.md
+#    - Functions: functions.md
+#    - Stores: stores.md
+#    - Runners: runners.md
+  - Language specification: ksml-language-spec.md
+  - Release Notes: release-notes.md
