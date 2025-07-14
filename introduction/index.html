@@ -1,0 +1,1329 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Documentation for the KSML project">
+      
+      
+        <meta name="author" content="Axual">
+      
+      
+      
+        <link rel="prev" href="..">
+      
+      
+        <link rel="next" href="../quick-start/">
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.17">
+    
+    
+      
+        <title>Introduction - KSML</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.bcfcd587.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#ksml-kafka-streams-for-low-code-environments" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="KSML" class="md-header__button md-logo" aria-label="KSML" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            KSML
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Introduction
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var media,input,key,value,palette=__md_get("__palette");if(palette&&palette.color){"(prefers-color-scheme)"===palette.color.media&&(media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']"),palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent"));for([key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="KSML" class="md-nav__button md-logo" aria-label="KSML" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    KSML
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Introduction
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Introduction
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#abstract" class="md-nav__link">
+    <span class="md-ellipsis">
+      Abstract
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#setting-up-a-test-environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Setting up a test environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ksml-in-practice" class="md-nav__link">
+    <span class="md-ellipsis">
+      KSML in practice
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="KSML in practice">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#example-1-inspect-data-on-a-topic" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example 1. Inspect data on a topic
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-2-copying-data-to-another-topic" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example 2. Copying data to another topic
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-3-filtering-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example 3. Filtering data
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-4-branching-messages" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example 4. Branching messages
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-5-dynamic-routing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example 5. Dynamic routing
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-6-multiple-pipelines" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example 6. Multiple pipelines
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../quick-start/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Quick start
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Reference
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Reference
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference-docs/streams/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Streams
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference-docs/pipelines/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Pipelines
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference-docs/types/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Types
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference-docs/notations/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Notations
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference-docs/operations/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Operstions
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference-docs/functions/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Functions
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference-docs/stores/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Stores
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference-docs/runners/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Runners
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ksml-language-spec/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Language specification
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../release-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Release Notes
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#abstract" class="md-nav__link">
+    <span class="md-ellipsis">
+      Abstract
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#setting-up-a-test-environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Setting up a test environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ksml-in-practice" class="md-nav__link">
+    <span class="md-ellipsis">
+      KSML in practice
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="KSML in practice">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#example-1-inspect-data-on-a-topic" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example 1. Inspect data on a topic
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-2-copying-data-to-another-topic" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example 2. Copying data to another topic
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-3-filtering-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example 3. Filtering data
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-4-branching-messages" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example 4. Branching messages
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-5-dynamic-routing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example 5. Dynamic routing
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-6-multiple-pipelines" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example 6. Multiple pipelines
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="ksml-kafka-streams-for-low-code-environments">KSML: Kafka Streams for Low Code Environments</h1>
+<h2 id="abstract">Abstract</h2>
+<p>Kafka Streams has captured the hearts and minds of many developers that want to develop streaming applications on top of
+Kafka. But as powerful as the framework is, Kafka
+Streams has had a hard time getting around the requirement of writing Java code and setting up build pipelines. There
+were some attempts to rebuild Kafka Streams, but up
+until now popular languages like Python did not receive equally powerful (and maintained) stream processing frameworks.
+In this article we will present a new declarative
+approach to unlock Kafka Streams, called KSML. By the time you finish reading this document, you will be able to write
+streaming applications yourself, using
+only a few simple basic rules and Python snippets.</p>
+<ul>
+<li><a href="#setting-up-a-test-environment">Setting up a test environment</a></li>
+<li><a href="#ksml-in-practice">KSML in practice</a><ul>
+<li><a href="#example-1-inspect-data-on-a-topic">Example 1. Inspect data on a topic</a></li>
+<li><a href="#example-2-copying-data-to-another-topic">Example 2. Copying data to another topic</a></li>
+<li><a href="#example-3-filtering-data">Example 3. Filtering data</a></li>
+<li><a href="#example-4-branching-messages">Example 4. Branching messages</a></li>
+<li><a href="#example-5-dynamic-routing">Example 5. Dynamic routing</a></li>
+<li><a href="#example-6-multiple-pipelines">Example 6. Multiple pipelines</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="setting-up-a-test-environment">Setting up a test environment</h2>
+<p>To demonstrate KSML's capabilities, you will need a working Kafka cluster, or an Axual Platform/Cloud environment. Check
+out the <a href="../reference-docs/runners/">Runners</a> page to configure KSML.
+<br>
+We set up a test topic, called <code>ksml_sensordata_avro</code> with key/value types of <code>String</code>/<code>SensorData</code>. The [SensorData]
+schema
+was created for demo purposes only and contains several fields to demonstrate KSML capabilities:</p>
+<pre><code class="language-json">{
+  &quot;namespace&quot;: &quot;io.axual.ksml.example&quot;,
+  &quot;doc&quot;: &quot;Emulated sensor data with a few additional attributes&quot;,
+  &quot;name&quot;: &quot;SensorData&quot;,
+  &quot;type&quot;: &quot;record&quot;,
+  &quot;fields&quot;: [
+    {
+      &quot;doc&quot;: &quot;The name of the sensor&quot;,
+      &quot;name&quot;: &quot;name&quot;,
+      &quot;type&quot;: &quot;string&quot;
+    },
+    {
+      &quot;doc&quot;: &quot;The timestamp of the sensor reading&quot;,
+      &quot;name&quot;: &quot;timestamp&quot;,
+      &quot;type&quot;: &quot;long&quot;
+    },
+    {
+      &quot;doc&quot;: &quot;The value of the sensor, represented as string&quot;,
+      &quot;name&quot;: &quot;value&quot;,
+      &quot;type&quot;: &quot;string&quot;
+    },
+    {
+      &quot;doc&quot;: &quot;The type of the sensor&quot;,
+      &quot;name&quot;: &quot;type&quot;,
+      &quot;type&quot;: {
+        &quot;name&quot;: &quot;SensorType&quot;,
+        &quot;type&quot;: &quot;enum&quot;,
+        &quot;doc&quot;: &quot;The type of a sensor&quot;,
+        &quot;symbols&quot;: [
+          &quot;AREA&quot;,
+          &quot;HUMIDITY&quot;,
+          &quot;LENGTH&quot;,
+          &quot;STATE&quot;,
+          &quot;TEMPERATURE&quot;
+        ]
+      }
+    },
+    {
+      &quot;doc&quot;: &quot;The unit of the sensor&quot;,
+      &quot;name&quot;: &quot;unit&quot;,
+      &quot;type&quot;: &quot;string&quot;
+    },
+    {
+      &quot;doc&quot;: &quot;The color of the sensor&quot;,
+      &quot;name&quot;: &quot;color&quot;,
+      &quot;type&quot;: [
+        &quot;null&quot;,
+        &quot;string&quot;
+      ],
+      &quot;default&quot;: null
+    },
+    {
+      &quot;doc&quot;: &quot;The city of the sensor&quot;,
+      &quot;name&quot;: &quot;city&quot;,
+      &quot;type&quot;: [
+        &quot;null&quot;,
+        &quot;string&quot;
+      ],
+      &quot;default&quot;: null
+    },
+    {
+      &quot;doc&quot;: &quot;The owner of the sensor&quot;,
+      &quot;name&quot;: &quot;owner&quot;,
+      &quot;type&quot;: [
+        &quot;null&quot;,
+        &quot;string&quot;
+      ],
+      &quot;default&quot;: null
+    }
+  ]
+}
+</code></pre>
+<p>For the rest of this document, we assume you have set up the <code>ksml_sensordata_avro</code> topic and populated it with some
+random data.</p>
+<p>So without any further delays, let's see how KSML allows us to process this data.</p>
+<h2 id="ksml-in-practice">KSML in practice</h2>
+<h3 id="example-1-inspect-data-on-a-topic">Example 1. Inspect data on a topic</h3>
+<p>The first example is one where we inspect data on a specific topic. The definition is as follows:</p>
+<pre><code class="language-yaml">streams:
+  sensor_source_avro:
+    topic: ksml_sensordata_avro
+    keyType: string
+    valueType: avro:SensorData
+
+functions:
+  # Log the message using the built-in log variable that is passed in from Java
+  log_message:
+    type: forEach
+    parameters:
+      - name: format
+        type: string
+    code: log.info(&quot;Consumed {} message - key={}, value={}&quot;, format, key, value)
+
+pipelines:
+  # Multiple pipelines can be created in a single KSML definition
+  consume_avro:
+    from: sensor_source_avro
+    forEach:
+      code: log_message(key, value, format=&quot;AVRO&quot;)
+
+</code></pre>
+<p>Let's analyze this definition one element at a time. Before defining processing logic, we first define the streams used
+by the definition. In this case we define a stream named <code>sensor_source_avro</code> which reads from the
+topic <code>ksml_sensordata_avro</code>. The stream defines a <code>string</code> key and Avro <code>SensorData</code> values.</p>
+<p>Next is a list of functions that can be used by the processing logic. Here we define just one, <code>log_message</code>, which
+simply uses the provided logger to write the key, value and format of a message to the console.</p>
+<p>The third element <code>pipelines</code> defines the real processing logic. We define a pipeline called <code>consume_avro</code>, which takes
+messages from <code>ksml_sensordata_avro</code> and passes them to <code>print_message</code>.</p>
+<p>The definition file is parsed by KSML and translated into a Kafka Streams topology, which
+is <a href="https://kafka.apache.org/37/javadoc/org/apache/kafka/streams/Topology.html#describe--">described</a> as follows:</p>
+<pre><code>Topologies:
+   Sub-topology: 0
+    Source: ksml_sensordata_avro (topics: [ksml_sensordata_avro])
+      --&gt; inspect_inspect_pipelines_consume_avro
+    Processor: inspect_inspect_pipelines_consume_avro (stores: [])
+      --&gt; none
+      &lt;-- ksml_sensordata_avro
+</code></pre>
+<p>And the output of the generated topology looks like this:</p>
+<pre><code>2024-03-06T18:31:57,196Z INFO  ksml.functions.log_message  Consumed AVRO message - key=sensor9, value={'city': 'Alkmaar', 'color': 'yellow', 'name': 'sensor9', 'owner': 'Bob', 'timestamp': 1709749917190, 'type': 'LENGTH', 'unit': 'm', 'value': '562', '@type': 'SensorData', '@schema': { &lt;&lt;Cleaned KSML Representation of Avro Schema&gt;&gt;}}
+2024-03-06T18:31:57,631Z INFO  ksml.functions.log_message  Consumed AVRO message - key=sensor3, value={'city': 'Amsterdam', 'color': 'blue', 'name': 'sensor3', 'owner': 'Bob', 'timestamp': 1709749917628, 'type': 'HUMIDITY', 'unit': 'g/m3', 'value': '23', '@type': 'SensorData', '@schema': { &lt;&lt;Cleaned KSML Representation of Avro Schema&gt;&gt;}}
+2024-03-06T18:31:58,082Z INFO  ksml.functions.log_message  Consumed AVRO message - key=sensor6, value={'city': 'Amsterdam', 'color': 'white', 'name': 'sensor6', 'owner': 'Bob', 'timestamp': 1709749918078, 'type': 'TEMPERATURE', 'unit': 'F', 'value': '64', '@type': 'SensorData', '@schema': { &lt;&lt;Cleaned KSML Representation of Avro Schema&gt;&gt;}}
+2024-03-06T18:31:58,528Z INFO  ksml.functions.log_message  Consumed AVRO message - key=sensor9, value={'city': 'Amsterdam', 'color': 'black', 'name': 'sensor9', 'owner': 'Evan', 'timestamp': 1709749918524, 'type': 'TEMPERATURE', 'unit': 'F', 'value': '87', '@type': 'SensorData', '@schema': { &lt;&lt;Cleaned KSML Representation of Avro Schema&gt;&gt;}}
+2024-03-06T18:31:58,970Z INFO  ksml.functions.log_message  Consumed AVRO message - key=sensor1, value={'city': 'Amsterdam', 'color': 'black', 'name': 'sensor1', 'owner': 'Bob', 'timestamp': 1709749918964, 'type': 'TEMPERATURE', 'unit': 'F', 'value': '75', '@type': 'SensorData', '@schema': { &lt;&lt;Cleaned KSML Representation of Avro Schema&gt;&gt;}}
+2024-03-06T18:31:59,412Z INFO  ksml.functions.log_message  Consumed AVRO message - key=sensor5, value={'city': 'Amsterdam', 'color': 'blue', 'name': 'sensor5', 'owner': 'Bob', 'timestamp': 1709749919409, 'type': 'LENGTH', 'unit': 'm', 'value': '658', '@type': 'SensorData', '@schema': { &lt;&lt;Cleaned KSML Representation of Avro Schema&gt;&gt;}}
+</code></pre>
+<p>As you can see, the output of the application is exactly that what we defined it to be in the <code>log_message</code> function,
+namely a dump of all data found on the topic.</p>
+<h3 id="example-2-copying-data-to-another-topic">Example 2. Copying data to another topic</h3>
+<p>Now that we can see what data is on a topic, we will start to manipulate its routing. In this example we are copying
+unmodified data to a secondary topic:</p>
+<pre><code class="language-yaml">streams:
+  - topic: ksml_sensordata_avro
+    keyType: string
+    valueType: avro:SensorData
+  - topic: ksml_sensordata_copy
+    keyType: string
+    valueType: avro:SensorData
+
+functions:
+  # Log the message using the built-in log variable that is passed in from Java
+  log_message:
+    type: forEach
+    parameters:
+      - name: format
+        type: string
+    code: log.info(&quot;Consumed {} message - key={}, value={}&quot;, format, key, value)
+
+pipelines:
+  # Every pipeline logs its own message, passing in the format parameter to log_message above
+  consume_avro:
+    from: sensor_source_avro
+    via:
+      - type: peek
+        forEach:
+          code: log_message(key, value, format=&quot;AVRO&quot;)
+    to: sensor_copy
+</code></pre>
+<p>You can see that we specified a second stream named <code>sensor_copy</code>  in this example, which is backed by the
+topic <code>ksml_sensordata_copy</code> target topic. The <code>log_message</code> function is unchanged, but the pipeline did undergo some
+changes. Two new elements are introduced here, namely <code>via</code> and <code>to</code>.</p>
+<p>The <code>via</code> tag allows users to define a series of operations executed on the data. In this case there is only one, namely
+a <code>peek</code> operation which does not modify any data, but simply outputs the data on stdout as a side effect.</p>
+<p>The <code>to</code> operation is a so-called "sink operation". Sink operations are always last in a pipeline. Processing of the
+pipeline does not continue after it was delivered to a sink operation. Note that in the first example above <code>forEach</code> is
+also a sink operation, whereas in this example we achieve the same result by passing the <code>log_message</code> function as a
+parameter to the <code>peek</code> operation.</p>
+<p>When this definition is translated by KSML, the following Kafka Streams topology is created:</p>
+<pre><code>Topologies:
+   Sub-topology: 0
+    Source: ksml_sensordata_avro (topics: [ksml_sensordata_avro])
+      --&gt; inspect_inspect_pipelines_consume_avro_via_1
+    Processor: inspect_inspect_pipelines_consume_avro_via_1 (stores: [])
+      --&gt; inspect_inspect_ToOperationParser_001
+      &lt;-- ksml_sensordata_avro
+    Sink: inspect_inspect_ToOperationParser_001 (topic: ksml_sensordata_copy)
+      &lt;-- inspect_inspect_pipelines_consume_avro_via_1
+
+</code></pre>
+<p>The output is similar to that of example 1, but the same data can also be found on the <code>ksml_sensordata_copy</code> topic now.</p>
+<h3 id="example-3-filtering-data">Example 3. Filtering data</h3>
+<p>Now that we can read and write data, let's see if we can apply some logic to the processing as well. In this example we
+will be filtering data based on the contents of the value:</p>
+<pre><code class="language-yaml"># This example shows how to read from four simple streams and log all messages
+
+streams:
+  sensor_source_avro:
+    topic: ksml_sensordata_avro
+    keyType: string
+    valueType: avro:SensorData
+  sensor_filtered:
+    topic: ksml_sensordata_filtered
+    keyType: string
+    valueType: avro:SensorData
+
+
+functions:
+  # Log the message using the built-in log variable that is passed in from Java
+  log_message:
+    type: forEach
+    parameters:
+      - name: format
+        type: string
+    code: log.info(&quot;Consumed {} message - key={}, value={}&quot;, format, key, value)
+
+  sensor_is_blue:
+    type: predicate
+    code: |
+      if value[&quot;color&quot;] == &quot;blue&quot;:
+        return True
+    expression: False
+
+pipelines:
+  # Every pipeline logs its own message, passing in the format parameter to log_message above
+  consume_avro:
+    from: sensor_source_avro
+    via:
+      - type: filter
+        if: sensor_is_blue
+      - type: peek
+        forEach:
+          code: log_message(key, value, format=&quot;AVRO&quot;)
+    to: sensor_filtered
+</code></pre>
+<p>Again, first we define the streams and the functions involved in the processing. You can see we added a new function
+called <code>filter_message</code> which returns <code>true</code> or <code>false</code> based on the <code>color</code> field in the value of the message. This
+function is used below in the pipeline.</p>
+<p>The pipeline is extended to include a <code>filter</code> operation, which takes a <code>predicate</code> function as parameter. That function
+is called for every input message. Only messages for which the function returns <code>true</code> are propagated. All other
+messages are discarded.</p>
+<p>Using this definition, KSML generates the following Kafka Streams topology:</p>
+<pre><code>Topologies:
+   Sub-topology: 0
+    Source: ksml_sensordata_avro (topics: [ksml_sensordata_avro])
+      --&gt; inspect_inspect_pipelines_consume_avro_via_1
+    Processor: inspect_inspect_pipelines_consume_avro_via_1 (stores: [])
+      --&gt; inspect_inspect_pipelines_consume_avro_via_2
+      &lt;-- ksml_sensordata_avro
+    Processor: inspect_inspect_pipelines_consume_avro_via_2 (stores: [])
+      --&gt; inspect_inspect_ToOperationParser_001
+      &lt;-- inspect_inspect_pipelines_consume_avro_via_1
+    Sink: inspect_inspect_ToOperationParser_001 (topic: ksml_sensordata_filtered)
+      &lt;-- inspect_inspect_pipelines_consume_avro_via_2
+
+</code></pre>
+<p>When it executes, we see the following output:</p>
+<pre><code>2024-03-06T18:45:10,401Z INFO  ksml.functions.log_message  Consumed AVRO message - key=sensor9, value={'city': 'Alkmaar', 'color': 'blue', 'name': 'sensor9', 'owner': 'Bob', 'timestamp': 1709749917190, 'type': 'LENGTH', 'unit': 'm', 'value': '562', '@type': 'SensorData', '@schema': { &lt;&lt;Cleaned KSML Representation of Avro Schema&gt;&gt;}}
+2024-03-06T18:45:10,735Z INFO  ksml.functions.log_message  Consumed AVRO message - key=sensor3, value={'city': 'Amsterdam', 'color': 'blue', 'name': 'sensor3', 'owner': 'Bob', 'timestamp': 1709749917628, 'type': 'HUMIDITY', 'unit': 'g/m3', 'value': '23', '@type': 'SensorData', '@schema': { &lt;&lt;Cleaned KSML Representation of Avro Schema&gt;&gt;}}
+2024-03-06T18:45:11,215Z INFO  ksml.functions.log_message  Consumed AVRO message - key=sensor6, value={'city': 'Amsterdam', 'color': 'blue', 'name': 'sensor6', 'owner': 'Bob', 'timestamp': 1709749918078, 'type': 'TEMPERATURE', 'unit': 'F', 'value': '64', '@type': 'SensorData', '@schema': { &lt;&lt;Cleaned KSML Representation of Avro Schema&gt;&gt;}}
+2024-03-06T18:45:11,484Z INFO  ksml.functions.log_message  Consumed AVRO message - key=sensor9, value={'city': 'Amsterdam', 'color': 'blue', 'name': 'sensor9', 'owner': 'Evan', 'timestamp': 1709749918524, 'type': 'TEMPERATURE', 'unit': 'F', 'value': '87', '@type': 'SensorData', '@schema': { &lt;&lt;Cleaned KSML Representation of Avro Schema&gt;&gt;}}
+2024-03-06T18:45:11,893Z INFO  ksml.functions.log_message  Consumed AVRO message - key=sensor1, value={'city': 'Amsterdam', 'color': 'blue', 'name': 'sensor1', 'owner': 'Bob', 'timestamp': 1709749918964, 'type': 'TEMPERATURE', 'unit': 'F', 'value': '75', '@type': 'SensorData', '@schema': { &lt;&lt;Cleaned KSML Representation of Avro Schema&gt;&gt;}}
+2024-03-06T18:45:12,008Z INFO  ksml.functions.log_message  Consumed AVRO message - key=sensor5, value={'city': 'Amsterdam', 'color': 'blue', 'name': 'sensor5', 'owner': 'Bob', 'timestamp': 1709749919409, 'type': 'LENGTH', 'unit': 'm', 'value': '658', '@type': 'SensorData', '@schema': { &lt;&lt;Cleaned KSML Representation of Avro Schema&gt;&gt;}}
+</code></pre>
+<p>As you can see, the filter operation did its work. Only messages with field <code>color</code> set to <code>blue</code> are passed on to
+the <code>peek</code> operation, while other messages are discarded.</p>
+<h3 id="example-4-branching-messages">Example 4. Branching messages</h3>
+<p>Another way to filter messages is to use a <code>branch</code> operation. This is also a sink operation, which closes the
+processing of a pipeline. It is similar to <code>forEach</code> and <code>to</code> in that respect, but has a different definition and
+behaviour.</p>
+<pre><code class="language-yaml">streams:
+  sensor_source:
+    topic: ksml_sensordata_avro
+    keyType: string
+    valueType: avro:SensorData
+  sensor_blue:
+    topic: ksml_sensordata_blue
+    keyType: string
+    valueType: avro:SensorData
+  sensor_red:
+    topic: ksml_sensordata_red
+    keyType: string
+    valueType: avro:SensorData
+
+pipelines:
+  main:
+    from: sensor_source
+    via:
+      - type: peek
+        forEach:
+          code: log.info(&quot;SOURCE MESSAGE - key={}, value={}&quot;, key, value)
+    branch:
+      - if:
+          expression: value is not None and value[&quot;color&quot;] == &quot;blue&quot;
+        to: sensor_blue
+      - if:
+          expression: value is not None and value[&quot;color&quot;] == &quot;red&quot;
+        to: sensor_red
+      - forEach:
+          code: log.warn(&quot;UNKNOWN COLOR - {}&quot;, value[&quot;color&quot;])
+</code></pre>
+<p>The <code>branch</code> operation takes a list of branches as its parameters, which each specifies a processing pipeline of its
+own. Branches contain the keyword <code>if</code>, which take a predicate function that determines if a message will flow into that
+particular branch, or if it will be passed to the next branch(es). Every message will only end up in one branch, namely
+the first one in order where the <code>if</code> predicate function returns <code>true</code>.</p>
+<p>In the example we see that the first branch will be populated only with messages with <code>color</code> field set to <code>blue</code>. Once
+there, these messages will be written to <code>ksml_sensordata_blue</code>. The second branch will only contain messages
+with <code>color</code>=<code>red</code> and these messages will be written to <code>ksml_sensordata_red</code>. Finally, the last branch outputs a
+message that the color is unknown and ends any further processing.</p>
+<p>When translated by KSML the following Kafka Streams topology is set up:</p>
+<pre><code>Topologies:
+   Sub-topology: 0
+    Source: ksml_sensordata_avro (topics: [ksml_sensordata_avro])
+      --&gt; branch_branch_pipelines_main_via_1
+    Processor: branch_branch_pipelines_main_via_1 (stores: [])
+      --&gt; branch_branch_branch_001
+      &lt;-- ksml_sensordata_avro
+    Processor: branch_branch_branch_001 (stores: [])
+      --&gt; branch_branch_branch_001-predicate-0, branch_branch_branch_001-predicate-1, branch_branch_branch_001-predicate-2
+      &lt;-- branch_branch_pipelines_main_via_1
+    Processor: branch_branch_branch_001-predicate-0 (stores: [])
+      --&gt; branch_branch_ToOperationParser_001
+      &lt;-- branch_branch_branch_001
+    Processor: branch_branch_branch_001-predicate-1 (stores: [])
+      --&gt; branch_branch_ToOperationParser_002
+      &lt;-- branch_branch_branch_001
+    Processor: branch_branch_branch_001-predicate-2 (stores: [])
+      --&gt; branch_branch_pipelines_main_branch_3
+      &lt;-- branch_branch_branch_001
+    Sink: branch_branch_ToOperationParser_001 (topic: ksml_sensordata_blue)
+      &lt;-- branch_branch_branch_001-predicate-0
+    Sink: branch_branch_ToOperationParser_002 (topic: ksml_sensordata_red)
+      &lt;-- branch_branch_branch_001-predicate-1
+    Processor: branch_branch_pipelines_main_branch_3 (stores: [])
+      --&gt; none
+      &lt;-- branch_branch_branch_001-predicate-2
+
+</code></pre>
+<p>It is clear that the branch operation is integrated in this topology. Its output looks like this:</p>
+<pre><code>2024-03-06T18:31:57,196Z INFO  k.f.branch_pipelines_main_via_1_forEach  SOURCE MESSAGE - key=sensor9, value={'city': 'Alkmaar', 'color': 'yellow', 'name': 'sensor9', 'owner': 'Bob', 'timestamp': 1709749917190, 'type': 'LENGTH', 'unit': 'm', 'value': '562', '@type': 'SensorData', '@schema': { &lt;&lt;Cleaned KSML Representation of Avro Schema&gt;&gt;}}
+2024-03-06T18:31:57,631Z INFO  k.f.branch_pipelines_main_via_1_forEach  SOURCE MESSAGE - key=sensor3, value={'city': 'Amsterdam', 'color': 'blue', 'name': 'sensor3', 'owner': 'Bob', 'timestamp': 1709749917628, 'type': 'HUMIDITY', 'unit': 'g/m3', 'value': '23', '@type': 'SensorData', '@schema': { &lt;&lt;Cleaned KSML Representation of Avro Schema&gt;&gt;}}
+2024-03-06T18:31:58,082Z INFO  k.f.branch_pipelines_main_via_1_forEach  SOURCE MESSAGE - key=sensor6, value={'city': 'Amsterdam', 'color': 'white', 'name': 'sensor6', 'owner': 'Bob', 'timestamp': 1709749918078, 'type': 'TEMPERATURE', 'unit': 'F', 'value': '64', '@type': 'SensorData', '@schema': { &lt;&lt;Cleaned KSML Representation of Avro Schema&gt;&gt;}}
+2024-03-06T18:31:58,528Z INFO  k.f.branch_pipelines_main_via_1_forEach  SOURCE MESSAGE - key=sensor9, value={'city': 'Amsterdam', 'color': 'black', 'name': 'sensor9', 'owner': 'Evan', 'timestamp': 1709749918524, 'type': 'TEMPERATURE', 'unit': 'F', 'value': '87', '@type': 'SensorData', '@schema': { &lt;&lt;Cleaned KSML Representation of Avro Schema&gt;&gt;}}
+2024-03-06T18:31:58,529Z WARN  k.f.branch_pipelines_main_branch_3_forEach UNKNOWN COLOR - black
+2024-03-06T18:31:58,970Z INFO  k.f.branch_pipelines_main_via_1_forEach  SOURCE MESSAGE - key=sensor1, value={'city': 'Amsterdam', 'color': 'black', 'name': 'sensor1', 'owner': 'Bob', 'timestamp': 1709749918964, 'type': 'TEMPERATURE', 'unit': 'F', 'value': '75', '@type': 'SensorData', '@schema': { &lt;&lt;Cleaned KSML Representation of Avro Schema&gt;&gt;}}
+2024-03-06T18:31:58,972Z WARN  k.f.branch_pipelines_main_branch_3_forEach UNKNOWN COLOR - black
+2024-03-06T18:31:59,412Z INFO  k.f.branch_pipelines_main_via_1_forEach  SOURCE MESSAGE - key=sensor5, value={'city': 'Amsterdam', 'color': 'blue', 'name': 'sensor5', 'owner': 'Bob', 'timestamp': 1709749919409, 'type': 'LENGTH', 'unit': 'm', 'value': '658', '@type': 'SensorData', '@schema': { &lt;&lt;Cleaned KSML Representation of Avro Schema&gt;&gt;}}
+</code></pre>
+<p>We see that every message processed by the pipeline is logged through the <code>k.f.branch_pipelines_main_via_1_forEach</code>
+logger. But the branch operation sorts the messages and sends messages with colors <code>blue</code> and <code>red</code> into their own
+branches. The only colors that show up as <code>UNKNOWN COLOR -</code> messages are non-blue and non-red and send through
+the <code>branch_pipelines_main_branch_3_forEach</code> logger.</p>
+<h3 id="example-5-dynamic-routing">Example 5. Dynamic routing</h3>
+<p>Sometimes it is necessary to route a message to one stream or another based on the content of a message. This example
+shows how to route messages dynamically using a TopicNameExtractor.</p>
+<pre><code class="language-yaml">streams:
+  sensor_source:
+    topic: ksml_sensordata_avro
+    keyType: string
+    valueType: avro:SensorData
+
+
+pipelines:
+  main:
+    from: sensor_source
+    via:
+      - type: peek
+        forEach:
+          code: log.info(&quot;SOURCE MESSAGE - key={}, value={}&quot;, key, value)
+    to:
+      topicNameExtractor:
+        code: |
+          if key == 'sensor1':
+            return 'ksml_sensordata_sensor1'
+          if key == 'sensor2':
+            return 'ksml_sensordata_sensor2'
+          return 'ksml_sensordata_sensor0'
+</code></pre>
+<p>The <code>topicNameExtractor</code> operation takes a function, which determines the routing of every message by returning a topic
+name string. In this case, when the key of a message is <code>sensor1</code> then the message will be sent
+to <code>ksml_sensordata_sensor1</code>. When it contains <code>sensor2</code> the message is sent to <code>ksml_sensordata_sensor2</code>. All other
+messages are sent to <code>ksml_sensordata_sensor0</code>.</p>
+<p>The equivalent Kafka Streams topology looks like this:</p>
+<pre><code>Topologies:
+   Sub-topology: 0
+    Source: ksml_sensordata_avro (topics: [ksml_sensordata_avro])
+      --&gt; route_route_pipelines_main_via_1
+    Processor: route_route_pipelines_main_via_1 (stores: [])
+      --&gt; route_route_ToOperationParser_001
+      &lt;-- ksml_sensordata_avro
+    Sink: route_route_ToOperationParser_001 (extractor class: io.axual.ksml.user.UserTopicNameExtractor@5d28e108)
+      &lt;-- route_route_pipelines_main_via_1
+</code></pre>
+<p>The output does not show anything special compared to previous examples, since all messages are simply written by the
+logger.</p>
+<h3 id="example-6-multiple-pipelines">Example 6. Multiple pipelines</h3>
+<p>In the previous examples there was always a single pipeline definition for processing data. KSML allows us to define
+multiple pipelines in a single file.</p>
+<p>In this example we combine the filtering example with the routing example. We will also define new pipelines with the
+sole purpose of logging the routed messages.</p>
+<pre><code class="language-yaml"># This example shows how to route messages to a dynamic topic. The target topic is the result of an executed function.
+
+streams:
+  sensor_source_avro:
+    topic: ksml_sensordata_avro
+    keyType: string
+    valueType: avro:SensorData
+  sensor_filtered:
+    topic: ksml_sensordata_filtered
+    keyType: string
+    valueType: avro:SensorData
+  sensor_0:
+    topic: ksml_sensordata_sensor0
+    keyType: string
+    valueType: avro:SensorData
+  sensor_1:
+    topic: ksml_sensordata_sensor1
+    keyType: string
+    valueType: avro:SensorData
+  sensor_2:
+    topic: ksml_sensordata_sensor2
+    keyType: string
+    valueType: avro:SensorData
+
+functions:
+  # Only pass the message to the next step in the pipeline if the color is blue
+  sensor_is_blue:
+    type: predicate
+    code: |
+      if value[&quot;color&quot;] == &quot;blue&quot;:
+        return True
+    expression: False
+
+pipelines:
+  filtering:
+    from: sensor_source_avro
+    via:
+      - type: filter
+        if: sensor_is_blue
+    to: sensor_filtered
+
+  routing:
+    from: sensor_filtered
+    via:
+      - type: peek
+        forEach:
+          code: log.info(&quot;Routing Blue sensor - key={}, value={}&quot;, key, value)
+    to:
+      topicNameExtractor:
+        code: |
+          if key == 'sensor1':
+            return 'ksml_sensordata_sensor1'
+          if key == 'sensor2':
+            return 'ksml_sensordata_sensor2'
+          return 'ksml_sensordata_sensor0'
+
+  sensor0_peek:
+    from: sensor_0
+    forEach:
+      code: log.info(&quot;SENSOR0 - key={}, value={}&quot;, key, value)
+
+  sensor1_peek:
+    from: sensor_1
+    forEach:
+      code: log.info(&quot;SENSOR1 - key={}, value={}&quot;, key, value)
+
+  sensor2_peek:
+    from: sensor_2
+    forEach:
+      code: log.info(&quot;SENSOR2 - key={}, value={}&quot;, key, value)
+</code></pre>
+<p>In this definition we defined five pipelines:</p>
+<ol>
+<li><code>filtering</code> which filters out all sensor messages that don't have the color blue and sends it to
+   the <code>sensor_filtered</code> stream.</li>
+<li><code>routing</code> which routes the data on the <code>sensor_filtered</code> stream to one of three target topics</li>
+<li><code>sensor0_peek</code> which writes the content of the <code>sensor_0</code> stream to the console</li>
+<li><code>sensor1_peek</code> which writes the content of the <code>sensor_1</code> stream to the console</li>
+<li><code>sensor2_peek</code> which writes the content of the <code>sensor_2</code> stream to the console</li>
+</ol>
+<p>The equivalent Kafka Streams topology looks like this:</p>
+<pre><code>Topologies:
+   Sub-topology: 0
+    Source: ksml_sensordata_avro (topics: [ksml_sensordata_avro])
+      --&gt; multiple_multiple_pipelines_filtering_via_1
+    Processor: multiple_multiple_pipelines_filtering_via_1 (stores: [])
+      --&gt; multiple_multiple_ToOperationParser_001
+      &lt;-- ksml_sensordata_avro
+    Sink: multiple_multiple_ToOperationParser_001 (topic: ksml_sensordata_filtered)
+      &lt;-- multiple_multiple_pipelines_filtering_via_1
+
+  Sub-topology: 1
+    Source: ksml_sensordata_filtered (topics: [ksml_sensordata_filtered])
+      --&gt; multiple_multiple_pipelines_routing_via_1
+    Processor: multiple_multiple_pipelines_routing_via_1 (stores: [])
+      --&gt; multiple_multiple_ToOperationParser_002
+      &lt;-- ksml_sensordata_filtered
+    Sink: multiple_multiple_ToOperationParser_002 (extractor class: io.axual.ksml.user.UserTopicNameExtractor@2700f556)
+      &lt;-- multiple_multiple_pipelines_routing_via_1
+
+  Sub-topology: 2
+    Source: ksml_sensordata_sensor0 (topics: [ksml_sensordata_sensor0])
+      --&gt; multiple_multiple_pipelines_sensor0_peek
+    Processor: multiple_multiple_pipelines_sensor0_peek (stores: [])
+      --&gt; none
+      &lt;-- ksml_sensordata_sensor0
+
+  Sub-topology: 3
+    Source: ksml_sensordata_sensor1 (topics: [ksml_sensordata_sensor1])
+      --&gt; multiple_multiple_pipelines_sensor1_peek
+    Processor: multiple_multiple_pipelines_sensor1_peek (stores: [])
+      --&gt; none
+      &lt;-- ksml_sensordata_sensor1
+
+  Sub-topology: 4
+    Source: ksml_sensordata_sensor2 (topics: [ksml_sensordata_sensor2])
+      --&gt; multiple_multiple_pipelines_sensor2_peek
+    Processor: multiple_multiple_pipelines_sensor2_peek (stores: [])
+      --&gt; none
+      &lt;-- ksml_sensordata_sensor2
+</code></pre>
+<p>And this is what the output would look something like this. The sensor peeks messages will not always be shown
+immediately after the Routing messages. This is because the pipelines are running in separate sub processes.</p>
+<pre><code>2024-03-06T20:11:39,520Z INFO  k.f.route2_pipelines_routing_via_1_forEach Routing Blue sensor - key=sensor6, value={'city': 'Utrecht', 'color': 'blue', 'name': 'sensor6', 'owner': 'Charlie', 'timestamp': 1709755877401, 'type': 'LENGTH', 'unit': 'ft', 'value': '507', '@type': 'SensorData', '@schema': { &lt;&lt;Cleaned KSML Representation of Avro Schema&gt;&gt;}}
+2024-03-06T20:11:39,523Z INFO  k.f.route2_pipelines_sensor0_peek_forEach SENSOR0 - key=sensor6, value={'city': 'Utrecht', 'color': 'blue', 'name': 'sensor6', 'owner': 'Charlie', 'timestamp': 1709755877401, 'type': 'LENGTH', 'unit': 'ft', 'value': '507', '@type': 'SensorData', '@schema': { &lt;&lt;Cleaned KSML Representation of Avro Schema&gt;&gt;}}
+2024-03-06T20:11:39,533Z INFO  k.f.route2_pipelines_routing_via_1_forEach Routing Blue sensor - key=sensor1, value={'city': 'Amsterdam', 'color': 'blue', 'name': 'sensor1', 'owner': 'Evan', 'timestamp': 1709755889834, 'type': 'LENGTH', 'unit': 'm', 'value': '609', '@type': 'SensorData', '@schema': { &lt;&lt;Cleaned KSML Representation of Avro Schema&gt;&gt;}}
+2024-03-06T20:11:39,535Z INFO  k.f.route2_pipelines_sensor1_peek_forEach SENSOR1 - key=sensor1, value={'city': 'Xanten', 'color': 'blue', 'name': 'sensor1', 'owner': 'Evan', 'timestamp': 1709755817913, 'type': 'STATE', 'unit': 'state', 'value': 'on', '@type': 'SensorData', '@schema': { &lt;&lt;Cleaned KSML Representation of Avro Schema&gt;&gt;}}
+2024-03-06T20:11:39,539Z INFO  k.f.route2_pipelines_routing_via_1_forEach Routing Blue sensor - key=sensor7, value={'city': 'Utrecht', 'color': 'blue', 'name': 'sensor7', 'owner': 'Evan', 'timestamp': 1709755892051, 'type': 'HUMIDITY', 'unit': '%', 'value': '77', '@type': 'SensorData', '@schema': { &lt;&lt;Cleaned KSML Representation of Avro Schema&gt;&gt;}}
+2024-03-06T20:11:39,5419Z INFO  k.f.route2_pipelines_sensor0_peek_forEach SENSOR0 - key=sensor7, value={'city': 'Utrecht', 'color': 'blue', 'name': 'sensor7', 'owner': 'Evan', 'timestamp': 1709755892051, 'type': 'HUMIDITY', 'unit': '%', 'value': '77', '@type': 'SensorData', '@schema': { &lt;&lt;Cleaned KSML Representation of Avro Schema&gt;&gt;}}
+2024-03-06T20:11:39,546Z INFO  k.f.route2_pipelines_routing_via_1_forEach Routing Blue sensor - key=sensor2, value={'city': 'Amsterdam', 'color': 'blue', 'name': 'sensor2', 'owner': 'Bob', 'timestamp': 1709755893390, 'type': 'HUMIDITY', 'unit': '%', 'value': '75', '@type': 'SensorData', '@schema': { &lt;&lt;Cleaned KSML Representation of Avro Schema&gt;&gt;}}
+2024-03-06T20:11:39,549Z INFO  k.f.route2_pipelines_sensor1_peek_forEach SENSOR2 - key=sensor2, value={'city': 'Amsterdam', 'color': 'blue', 'name': 'sensor2', 'owner': 'Bob', 'timestamp': 1709755893390, 'type': 'HUMIDITY', 'unit': '%', 'value': '75', '@type': 'SensorData', '@schema': { &lt;&lt;Cleaned KSML Representation of Avro Schema&gt;&gt;}}
+2024-03-06T20:11:39,552Z INFO  k.f.route2_pipelines_routing_via_1_forEach Routing Blue sensor - key=sensor1, value={'city': 'Xanten', 'color': 'blue', 'name': 'sensor1', 'owner': 'Bob', 'timestamp': 1709755894717, 'type': 'HUMIDITY', 'unit': '%', 'value': '76', '@type': 'SensorData', '@schema': { &lt;&lt;Cleaned KSML Representation of Avro Schema&gt;&gt;}}
+2024-03-06T20:11:39,555Z INFO  k.f.route2_pipelines_sensor1_peek_forEach SENSOR1 - key=sensor1, value={'city': 'Xanten', 'color': 'blue', 'name': 'sensor1', 'owner': 'Bob', 'timestamp': 1709755894717, 'type': 'HUMIDITY', 'unit': '%', 'value': '76', '@type': 'SensorData', '@schema': { &lt;&lt;Cleaned KSML Representation of Avro Schema&gt;&gt;}}
+2024-03-06T20:11:39,558Z INFO  k.f.route2_pipelines_routing_via_1_forEach Routing Blue sensor - key=sensor9, value={'city': 'Alkmaar', 'color': 'blue', 'name': 'sensor9', 'owner': 'Alice', 'timestamp': 1709755896937, 'type': 'HUMIDITY', 'unit': '%', 'value': '65', '@type': 'SensorData', '@schema': { &lt;&lt;Cleaned KSML Representation of Avro Schema&gt;&gt;}}
+2024-03-06T20:11:39,562Z INFO  k.f.route2_pipelines_sensor0_peek_forEach SENSOR0 - key=sensor9, value={'city': 'Alkmaar', 'color': 'blue', 'name': 'sensor9', 'owner': 'Alice', 'timestamp': 1709755896937, 'type': 'HUMIDITY', 'unit': '%', 'value': '65', '@type': 'SensorData', '@schema': { &lt;&lt;Cleaned KSML Representation of Avro Schema&gt;&gt;}}
+</code></pre>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "..", "features": [], "search": "../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.1e8ae164.min.js"></script>
+      
+        <script src="../search/main.js"></script>
+      
+    
+  </body>
+</html>
