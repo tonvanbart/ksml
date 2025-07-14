@@ -14,7 +14,6 @@ permissions:
 jobs:
   build_mkdocs:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -22,14 +21,15 @@ jobs:
           fetch-depth: 0
       - name: Setup Pages
         uses: actions/configure-pages@v5
-
-      - uses: actions/setup-python@v5
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
           python-version: 3.9
-      - run: pip install \
+      - name: Install mkdocs
+        run: pip install \
           mkdocs-material
-      - run: mkdocs build --site-dir _site --config-file mkdocs.yml
-#      - run: mkdocs gh-deploy --config-file mkdocs.yml --force
+      - name: Build mkdocs site
+        run: mkdocs build --site-dir _site --config-file mkdocs.yml
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
@@ -42,10 +42,6 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-#      - name: Checkout
-#        uses: actions/checkout@v4
-#        with:
-#          ref: gh-pages
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
