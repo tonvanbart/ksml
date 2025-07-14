@@ -2,6 +2,9 @@
 
 Welcome to the KSML documentation, Use the menu on the left to navigate through the various sections
 
+## Testing a change
+Adding a new paragraph to verify the pages deployment flow.
+
 ## Quick Start
 
 If you want to get going quickly, go to the KSML Quickstart.
