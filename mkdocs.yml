@@ -2,7 +2,8 @@ site_name: KSML
 site_author: Axual
 site_description: Documentation for the KSML project
 site_dir: _site
-theme: mkdocs
+theme: material
+#theme: mkdocs
 #theme: readthedocs
 
 nav:
