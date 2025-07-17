@@ -27,7 +27,7 @@ jobs:
           python-version: 3.9
       - name: Install mkdocs
         run: pip install \
-          mkdocs-material
+          mkdocs-material mkdocs-include-markdown-plugin
       - name: Build mkdocs site
         run: mkdocs build --site-dir _site --config-file mkdocs.yml
       - name: Upload artifact
