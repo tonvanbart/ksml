@@ -1,0 +1,39 @@
+# $schema: https://raw.githubusercontent.com/Axual/ksml/refs/heads/release/1.0.x/docs/ksml-language-spec.json
+
+# This example shows how to read from a simple stream and copy every message to a target topic.
+
+streams:
+  sensor_source:
+    topic: ksml_sensordata_avro
+    keyType: string
+    valueType: avro:SensorData
+    offsetResetPolicy: latest
+  sensor_copy:
+    topic: ksml_sensordata_copy
+    keyType: string
+    valueType: avro:SensorData
+
+pipelines:
+  # The main pipeline reads messages, outputs them and saves a copy in a target topic
+  main_copy_pipeline:
+    from: sensor_source
+    via:
+      - type: peek
+        forEach:
+          code: log.info("MAIN PIPELINE - key={}, value={}", key, value)
+    to: sensor_copy
+
+  # The secondary pipeline does exactly the same, but by inlining the source and target topics instead of referencing
+  # an earlier definition
+  secondary_copy_pipeline:
+    from:
+      topic: ksml_sensordata_avro
+      keyType: string
+      valueType: avro:SensorData
+    via:
+      - type: peek
+        forEach:
+          code: log.info("SECONDARY PIPELINE - key={}, value={}", key, value)
+    to:
+      topic: ksml_sensordata_copy
+      # No need to explicitly reference key/value types, since they are derived from previous steps in the pipeline

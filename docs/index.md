@@ -6,6 +6,12 @@ Welcome to the KSML documentation, Use the menu on the left to navigate through 
 
 If you want to get going quickly, go to the KSML Quickstart.
 
+## trying out include
+
+```yaml
+{% include "examples/include-example-copy.yaml" %}
+```
+
 ## Introduction
 
 KSML allows anyone to specify a powerful Kafka Streams application in just a few lines of YAML and Python snippets.
