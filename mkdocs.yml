@@ -2,9 +2,19 @@ site_name: KSML
 site_author: Axual
 site_description: Documentation for the KSML project
 site_dir: _site
-theme: material
+theme:
+  name: material
+  features:
+    - content.code.copy
 #theme: mkdocs
 #theme: readthedocs
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
 
 nav:
   - Home: index.md
