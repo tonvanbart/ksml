@@ -7,7 +7,6 @@ theme:
   name: material
   features:
     - content.code.copy
-    - navigation.tabs
 
 plugins:
   - search
