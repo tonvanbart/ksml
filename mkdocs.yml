@@ -21,6 +21,8 @@ plugins:
       recursive: true
   - autorefs:
       resolve_closest: true
+  - mike:
+      version_selector: true
 
 markdown_extensions:
   - pymdownx.highlight:
