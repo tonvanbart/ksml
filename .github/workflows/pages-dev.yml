@@ -31,5 +31,6 @@ jobs:
       - name: Build Docs Site
         id: deployment
         run: |
-          mike deploy --push --update-aliases SNAPSHOT-dev
-          mike set-default SNAPSHOT-dev --push
+          mike deploy --push --update-aliases dev-latest SNAPSHOT-dev
+          mike deploy --push --update-aliases dev-branch ${{ github.ref_name }}
+          mike set-default dev-latest --push
