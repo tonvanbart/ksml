@@ -1,6 +1,6 @@
 # KSML Documentation
 
-Welcome to the KSML documentation, Use the menu on the left to navigate through the various sections
+Welcome to the (old) KSML documentation, Use the menu on the left to navigate through the various sections
 
 ## Quick Start
 
