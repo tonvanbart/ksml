@@ -29,6 +29,7 @@ jobs:
           git config --global user.name "deploy SNAPSHOT docs"
           git config --global user.email "ton.van.bart@axual.com"
       - name: Build Docs Site
+        id: deployment
         run: |
-          mike deploy --push --update-aliases SNAPSHOT
-          mike set-default SNAPSHOT --push
+          mike deploy --push --update-aliases SNAPSHOT-dev
+          mike set-default SNAPSHOT-dev --push
