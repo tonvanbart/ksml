@@ -32,6 +32,6 @@ jobs:
       - name: Build Docs Site
         id: deployment
         run: |
-          mike deploy --push --update-aliases dev-latest 1.0.8
+          mike deploy --push --update-aliases 1.0.8
           mike deploy --push --update-aliases dev-branch ${{ github.ref_name }}
           mike set-default dev-latest --push
