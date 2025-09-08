@@ -24,6 +24,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import io.axual.ksml.client.serde.ResolvingDeserializer;
 import io.axual.ksml.client.serde.ResolvingSerializer;
+import io.axual.ksml.data.mapper.DataObjectFlattener;
+import io.axual.ksml.data.notation.NotationContext;
+import io.axual.ksml.data.notation.avro.AvroNotation;
+import io.axual.ksml.data.notation.avro.confluent.ConfluentAvroNotationProvider;
 import io.axual.ksml.data.notation.json.JsonSchemaMapper;
 import io.axual.ksml.definition.parser.TopologyDefinitionParser;
 import io.axual.ksml.execution.ErrorHandler;
@@ -109,12 +113,24 @@ public class KSMLRunner {
             // Set up all default notations and register them in the NotationLibrary
             final var notationFactories = new NotationFactories(config.kafkaConfig());
             for (final var notation : notationFactories.notations().entrySet()) {
-                ExecutionContext.INSTANCE.notationLibrary().register(notation.getValue().create(notation.getKey(), null));
+                ExecutionContext.INSTANCE.notationLibrary().register(notation.getKey(), notation.getValue().create(null));
             }
 
             // Set up all notation overrides from the KSML config
             for (final var notationEntry : ksmlConfig.notations().entrySet()) {
                 final var notationStr = notationEntry.getKey() != null ? notationEntry.getKey() : "undefined";
+
+                final var notationConfigs = new HashMap<String, String>();
+                final var schemaRegistryName = notationEntry.getValue().schemaRegistry();
+                if (schemaRegistryName != null) {
+                    final var srConfigs = ksmlConfig.schemaRegistries().get(schemaRegistryName);
+                    if (srConfigs != null && srConfigs.config() != null) {
+                        notationConfigs.putAll(srConfigs.config());
+                    } else {
+                        log.warn("No schema registry configuration found for schema registry: {}", schemaRegistryName);
+                    }
+                }
+
                 final var notationConfig = notationEntry.getValue();
                 final var factoryName = notationConfig != null ? notationConfig.type() : "unknown";
                 if (notationConfig != null && factoryName != null) {
@@ -122,19 +138,20 @@ public class KSMLRunner {
                     if (factory == null) {
                         throw FatalError.reportAndExit(new ConfigException("Unknown notation type: " + factoryName));
                     }
-                    ExecutionContext.INSTANCE.notationLibrary().register(factory.create(notationStr, notationConfig.config()));
+                    if (notationConfig.config() != null) notationConfigs.putAll(notationConfig.config());
+                    ExecutionContext.INSTANCE.notationLibrary().register(notationStr, factory.create(notationConfigs));
                 } else {
-                    log.warn("Notation configuration incomplete: notation=" + notationStr + ", type=" + factoryName);
+                    log.warn("Notation configuration incomplete: notation={}, serde={}", notationStr, factoryName);
                 }
             }
 
             // Ensure typical defaults are used for AVRO
             // WARNING: Defaults for notations will be deprecated in the future. Make sure you explicitly configure
             // notations with multiple implementations (like AVRO) in your ksml-runner.yaml.
-            if (!ExecutionContext.INSTANCE.notationLibrary().exists(NotationFactories.AVRO)) {
-                final var defaultAvro = notationFactories.confluentAvro();
-                ExecutionContext.INSTANCE.notationLibrary().register(defaultAvro.create(NotationFactories.AVRO, null));
-                log.warn("No implementation specified for AVRO notation. If you use AVRO in your KSML definition, add the required configuration to the ksml-runner.yaml");
+            if(ksmlConfig.notations().isEmpty()){
+                final var defaultAvro = new ConfluentAvroNotationProvider().createNotation(new NotationContext(AvroNotation.NOTATION_NAME,null,  new DataObjectFlattener(), config.kafkaConfig()));
+                ExecutionContext.INSTANCE.notationLibrary().register(AvroNotation.NOTATION_NAME, defaultAvro);
+                log.warn("No notations configured. Loading default Avro notation with Confluent implementation. If you use AVRO in your KSML definition, please explicitly configure notations in the ksml-runner.yaml.");
             }
 
             final var errorHandling = ksmlConfig.errorHandlingConfig();
@@ -148,36 +165,35 @@ public class KSMLRunner {
                             new ResolvingSerializer<>(serde.serializer(), config.kafkaConfig()),
                             new ResolvingDeserializer<>(serde.deserializer(), config.kafkaConfig())));
 
-            final Map<String, TopologyDefinition> producerSpecs = new HashMap<>();
-            final Map<String, TopologyDefinition> pipelineSpecs = new HashMap<>();
+            final Map<String, TopologyDefinition> producerDefinitions = new HashMap<>();
+            final Map<String, TopologyDefinition> pipelineDefinitions = new HashMap<>();
             definitions.forEach((name, definition) -> {
                 final var parser = new TopologyDefinitionParser(name);
-                final var specification = parser.parse(ParseNode.fromRoot(definition, name));
-                if (!specification.producers().isEmpty()) producerSpecs.put(name, specification);
-                if (!specification.pipelines().isEmpty()) pipelineSpecs.put(name, specification);
+                final var topologyDefinition = parser.parse(ParseNode.fromRoot(definition, name));
+                if (!topologyDefinition.producers().isEmpty()) producerDefinitions.put(name, topologyDefinition);
+                if (!topologyDefinition.pipelines().isEmpty()) pipelineDefinitions.put(name, topologyDefinition);
             });
 
-
-            if (!ksmlConfig.enableProducers() && !producerSpecs.isEmpty()) {
+            if (!ksmlConfig.enableProducers() && !producerDefinitions.isEmpty()) {
                 log.warn("Producers are disabled for this runner. The supplied producer specifications will be ignored.");
-                producerSpecs.clear();
+                producerDefinitions.clear();
             }
-            if (!ksmlConfig.enablePipelines() && !pipelineSpecs.isEmpty()) {
+            if (!ksmlConfig.enablePipelines() && !pipelineDefinitions.isEmpty()) {
                 log.warn("Pipelines are disabled for this runner. The supplied pipeline specifications will be ignored.");
-                pipelineSpecs.clear();
+                pipelineDefinitions.clear();
             }
 
-            final var producer = producerSpecs.isEmpty() ? null : new KafkaProducerRunner(
+            final var producer = producerDefinitions.isEmpty() ? null : new KafkaProducerRunner(
                     KafkaProducerRunner.Config.builder()
-                            .definitions(producerSpecs)
+                            .definitions(producerDefinitions)
                             .kafkaConfig(config.kafkaConfig())
                             .pythonContextConfig(ksmlConfig.pythonContextConfig())
                             .build()
             );
-            final var streams = pipelineSpecs.isEmpty() ? null : new KafkaStreamsRunner(KafkaStreamsRunner.Config.builder()
+            final var streams = pipelineDefinitions.isEmpty() ? null : new KafkaStreamsRunner(KafkaStreamsRunner.Config.builder()
                     .storageDirectory(ksmlConfig.storageDirectory())
                     .appServer(ksmlConfig.applicationServerConfig())
-                    .definitions(pipelineSpecs)
+                    .definitions(pipelineDefinitions)
                     .kafkaConfig(config.kafkaConfig())
                     .pythonContextConfig(ksmlConfig.pythonContextConfig())
                     .build());

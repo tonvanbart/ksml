@@ -42,7 +42,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class GlobalTableDefinitionTest {
@@ -55,13 +54,12 @@ class GlobalTableDefinitionTest {
 
     @Test
     void testGlobalTableDefinition() {
-        when(mockNotation.name()).thenReturn(UserType.DEFAULT_NOTATION);
-        ExecutionContext.INSTANCE.notationLibrary().register(mockNotation);
+        ExecutionContext.INSTANCE.notationLibrary().register(UserType.DEFAULT_NOTATION, mockNotation);
 
         final var stringType = UserTypeParser.parse("string");
 
         // given a TableDefinition
-        final var tableDefinition = new GlobalTableDefinition("topic", stringType, stringType, null, null, new KeyValueStateStoreDefinition("storename", stringType, stringType));
+        final var tableDefinition = new GlobalTableDefinition("topic", stringType, stringType, null, null, null, new KeyValueStateStoreDefinition("storename", stringType, stringType));
         final var resources = new TopologyResources("test");
 
         final var context = new TopologyBuildContext(builder, resources);

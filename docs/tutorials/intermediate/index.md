@@ -6,6 +6,16 @@ These tutorials will help you build more sophisticated data processing applicati
 
 ## Available Tutorials
 
+### [Branching: Conditional Message Routing](branching.md)
+
+Master KSML's branching capabilities to route messages based on conditions:
+
+- Understanding KSML branching and its relationship to Kafka Streams
+- Simple content-based routing patterns
+- Complex multi-condition business logic
+- Advanced branching patterns and best practices
+- Error handling with branches
+
 ### [Working with Aggregations](aggregations.md)
 
 Learn how to use KSML's stateful operations to aggregate data:
@@ -54,10 +64,10 @@ Learn how to use and manage state in your KSML applications:
 
 ## Learning Path
 
-We recommend following these tutorials in order, as they build on concepts introduced in previous tutorials. After completing these intermediate tutorials, you'll be ready to move on to the [Advanced Tutorials](../advanced/index.md), which cover more complex topics like custom processors, performance optimization, and integration with external systems.
+We recommend following these tutorials in order, as they build on concepts introduced in previous tutorials.
 
-## Additional Resources
+## Next Steps
 
-- [Core Concepts: Operations](../../core-concepts/operations.md) - Detailed explanations of KSML operations
-- [Reference: Stateful Operations](../../reference/operations-reference.md#stateful-operations) - Complete reference for stateful operations
-- [Examples Library: Intermediate Examples](../../resources/examples-library.md#intermediate-examples) - Ready-to-use examples for intermediate patterns
+After mastering these intermediate concepts, you're ready for the most advanced KSML topics:
+
+👉 **Continue to [Advanced Tutorials](../advanced/index.md)** to learn about custom processors, performance optimization, and integration with external systems.

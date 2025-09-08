@@ -2,37 +2,48 @@
 
 Welcome to the KSML documentation. KSML allows you to build powerful Kafka Streams applications using YAML and Python, without writing Java code.
 
-## Documentation Sections
+## 1. Getting Started
+- [Quick Start](getting-started/quick-start.md)
+- [Understanding KSML](getting-started/introduction.md)
 
-### 1. Getting Started
-- [Introduction to KSML](getting-started/introduction.md)
-- [Installation and Setup](getting-started/installation.md)
+## 2. Tutorials
+- [Overview](tutorials/index.md)
 - [KSML Basics Tutorial](getting-started/basics-tutorial.md)
-
-### 2. Core Concepts
-- [Streams and Data Types](core-concepts/streams-and-data-types.md)
-- [Pipelines](core-concepts/pipelines.md)
-- [Functions](core-concepts/functions.md)
-- [Operations](core-concepts/operations.md)
-
-### 3. Tutorials and Guides
 - [Beginner Tutorials](tutorials/beginner/index.md)
+      - [Filtering and Transforming](tutorials/beginner/filtering-transforming.md)
+      - [Different Data Formats](tutorials/beginner/data-formats.md)
+      - [Logging and Monitoring](tutorials/beginner/logging-monitoring.md)
 - [Intermediate Tutorials](tutorials/intermediate/index.md)
+      - [Branching](tutorials/intermediate/branching.md)
+      - [Aggregations](tutorials/intermediate/aggregations.md)
+      - [Joins](tutorials/intermediate/joins.md)
+      - [Windowing](tutorials/intermediate/windowing.md)
+      - [Error Handling](tutorials/intermediate/error-handling.md)
+      - [State Stores](tutorials/intermediate/state-stores.md)
 - [Advanced Tutorials](tutorials/advanced/index.md)
-- [Use Case Guides](tutorials/use-cases/index.md)
+      - [Complex Event Processing](tutorials/advanced/complex-event-processing.md)
+      - [Custom State Stores](tutorials/advanced/custom-state-stores.md)
+      - [Performance Optimization](tutorials/advanced/performance-optimization.md)
+      - [Integration with External Systems](tutorials/advanced/external-integration.md)
 
-### 4. Reference
-- [KSML Language Reference](reference/language-reference.md)
-- [Operations Reference](reference/operations-reference.md)
-- [Functions Reference](reference/functions-reference.md)
-- [Data Types Reference](reference/data-types-reference.md)
+## 3. Use Case Guides
+- [Overview](use-cases/index.md)
+- [Data Transformation](use-cases/data-transformation.md)
+- [Event-Driven Applications](use-cases/event-driven-applications.md)
+- [IoT Data Processing](use-cases/iot-data-processing.md)
+- [Real-time Analytics](use-cases/real-time-analytics.md)
+- [Fraud Detection](use-cases/fraud-detection.md)
+
+## 4. References
+- [Overview](reference/index.md)
+- [KSML Definition Reference](reference/definition-reference.md)
+- [Pipelines](reference/pipeline-reference.md)
+- [Function Reference](reference/function-reference.md)
+- [Operation Reference](reference/operation-reference.md)
+- [Data Types and Notations Reference](reference/data-and-formats-reference.md)
+- [State Store Reference](reference/state-store-reference.md)
 - [Configuration Reference](reference/configuration-reference.md)
-
-### 5. Resources
-- [Examples Library](resources/examples-library.md)
-- [Troubleshooting Guide](resources/troubleshooting.md)
-- [Migration Guide](resources/migration.md)
-- [Community and Support](resources/community.md)
 
 ## Latest Release
 - [Release Notes](release-notes.md)
+

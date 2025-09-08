@@ -21,8 +21,8 @@ package io.axual.ksml.data.notation.protobuf;
  */
 
 import com.squareup.wire.schema.Field;
+import com.squareup.wire.schema.Location;
 import com.squareup.wire.schema.internal.parser.*;
-import io.apicurio.registry.utils.protobuf.schema.FileDescriptorUtils;
 import io.axual.ksml.data.exception.SchemaException;
 import io.axual.ksml.data.mapper.DataSchemaMapper;
 import io.axual.ksml.data.notation.ReferenceResolver;
@@ -132,7 +132,7 @@ public class ProtobufFileElementSchemaMapper implements DataSchemaMapper<ProtoFi
                     throw new SchemaException("Protobuf enum type '" + enumElement.getName() + "' has no constants defined");
                 }
                 final var defaultValue = ListUtil.find(symbols, symbol -> symbol.tag() == PROTOBUF_ENUM_DEFAULT_VALUE_INDEX);
-                return new EnumSchema(reference.namespace(), enumElement.getName(), reference.type().getDocumentation(), symbols, defaultValue != null ? defaultValue.name() : null);
+                return new EnumSchema(reference.namespace(), enumElement.getName(), reference.type().getDocumentation(), symbols, defaultValue != null ? new Symbol(defaultValue.name()) : null);
             }
             if (reference != null && reference.type() instanceof MessageElement msgElement) {
                 final var fields = convertMessageFieldsToDataFields(context, msgElement);
@@ -333,7 +333,7 @@ public class ProtobufFileElementSchemaMapper implements DataSchemaMapper<ProtoFi
         public ProtoFileElement toProtoFileElement() {
             final var options = new ArrayList<OptionElement>();
             return new ProtoFileElement(
-                    FileDescriptorUtils.DEFAULT_LOCATION,
+                    Location.get(""),
                     namespace,
                     ProtobufConstants.DEFAULT_SYNTAX,
                     Collections.emptyList(),

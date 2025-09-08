@@ -25,9 +25,24 @@ Input Topic → Filter → Transform → Output Topic
 
 Before you begin, make sure you have:
 
-- Completed the [Installation and Setup](installation.md) guide
-- A running KSML environment with Kafka
+- Completed the [Installation and Setup](quick-start.md) guide with Docker Compose running
 - Basic understanding of YAML syntax
+- Your KSML environment running (`docker compose ps` should show all services as "Up")
+
+## Choose Your Setup Method
+
+**Option A: Quick Start (Recommended)**
+Download the pre-configured tutorial files and start immediately:
+
+1. Download and extract: [local-docker-compose-setup-basics-tutorial.zip](../local-docker-compose-setup/local-docker-compose-setup-basics-tutorial.zip)
+2. Navigate to the extracted folder
+3. Run `docker compose up -d` (if not already running)
+4. Skip to [Step 5: Run Your Pipeline](#step-5-run-your-pipeline-definitions)
+
+**Option B: Step-by-Step Tutorial**
+Use the docker-compose.yml from the [Quick Start Tutorial](quick-start.md) and manually create/modify the producer and processor definitions as described below to learn each component step by step.
+
+---
 
 ## Understanding the KSML File Structure
 
@@ -41,63 +56,71 @@ Let's create each section step by step.
 
 ## Step 1: Define Your Streams
 
-First, let's define the input and output streams for our pipeline:
+> **Note**: Skip Steps 1-4 if you chose Option A above.
 
-```yaml
-streams:
-  input_stream:
-    topic: tutorial_input
-    keyType: string
-    valueType: json
-  output_stream:
-    topic: tutorial_output
-    keyType: string
-    valueType: json
-```
+First, let's create a new file `tutorial.yaml` and start by defining the input and output streams for our pipeline:
+
+??? info "Input and output streams for our pipeline (click to expand)"
+
+    ```yaml
+    --8<-- "definitions/basics-tutorial/tutorial.yaml:0:9"
+    ```
 
 This defines:
 
-- An input stream reading from the `tutorial_input` topic with string keys and JSON values
-- An output stream writing to the `tutorial_output` topic with the same data types
+- An input stream reading from the `temperature_data` topic with string keys and JSON values
+- An output stream writing to the `temperature_data_converted` topic with the same data types
 
 ### Understanding Stream Definitions
 
-Each stream definition includes:
+Each KSML stream has:
 
 - A unique name (e.g., `input_stream`)
 - The Kafka topic it connects to
 - The data types for keys and values
 
-KSML supports various data types including:
+KSML supports various data types and notations including:
 
 - `string`: For text data
 - `json`: For JSON-formatted data
 - `avro`: For Avro-formatted data (requires schema)
 - `binary`: For raw binary data
-- And more
+- And [more](../reference/data-and-formats-reference.md)
 
 ## Step 2: Create a Simple Function
 
-Next, let's create a function to log messages as they flow through our pipeline:
+Next, let's add functions to filter, transform and log messages as they flow through our pipeline:
 
-```yaml
-functions:
-  log_message:
-    type: forEach
-    parameters:
-      - name: message_type
-        type: string
-    code: |
-      log.info("{} message - key={}, value={}", message_type, key, value)
-```
+??? info "Functions to filter, transform and log messages to filter (click to expand)"
 
-This function:
+    ```yaml
+    --8<-- "definitions/basics-tutorial/tutorial.yaml:11:29"
+    ```
 
-- Is named `log_message`
-- Is of type `forEach`, which means it [always gets](../reference/function-reference.md)  two parameters `key` and
-  `value`, and does not return a value
-- Takes one additional parameter called `message_type`
-- Uses the built-in `log` object to output information about each message
+We defined three uniquely named functions:
+
+**`temperature_above_threshold`** function:
+
+- Is of type `predicate`, which means it [always gets](../reference/function-reference.md#predicate) a `key` and
+  `value` as its parameters and needs to return a `boolean` value
+- Uses the `expression` tag to return a `True` if the `temperature` field in the value (zero if it does not exist) is
+  above 70, `False` otherwise.
+
+**`fahrenheit_to_celsius`** function:
+
+- Is of type `valueTransformer`, which means it [always gets](../reference/function-reference.md#valuetransformer)
+  two parameters `key` and `value`, and returns a (modified, or transformed) value for the next processing step
+- Uses the `expression` tag to define the value to return, in this case renaming `temperature` to `temp_fahrenheit` and
+  adding a field called `temp_celsius`
+
+**`log_message`** function:
+
+- Is of type `forEach`, which means it [always gets](../reference/function-reference.md#foreach) two parameters
+  `key` and `value`, and does not return a value
+- Takes an extra parameter `prefix` of type `string`
+- Checks if the `prefix` variable is of the correct type, and not empty, and if so, uses it to compose a description for
+  the log message
+- Uses the built-in `log` object to output information at `info` level
 
 ### Understanding Functions in KSML
 
@@ -105,31 +128,19 @@ Functions in KSML:
 
 - Can be reused across multiple operations in your pipelines
 - Are written in Python
-- Have access to pre-defined parameters based on function type
+- Have access to pre-defined parameters based on [function type](../reference/function-reference.md)
 - Can take additional parameters for more flexibility
-- Must return a value if so pre-defined by the function type
+- Must return a value if required by the function type
 
 ## Step 3: Build Your Pipeline
 
-Now, let's create the pipeline that processes our data:
+Now, let's add the pipeline that processes our data:
 
-```yaml
-pipelines:
-  tutorial_pipeline:
-    from: input_stream
-    via:
-      - type: filter
-        if:
-          expression: value.get('temperature') > 70
-      - type: mapValues
-        mapper:
-          expression: |
-            {"sensor": key, "temp_fahrenheit": value.get('temperature'), "temp_celsius": (value.get('temperature') - 32) * 5/9}
-      - type: peek
-        forEach:
-          code: log_message(key, value, message_type="Processed")
-    to: output_stream
-```
+??? info "Adding Pipelines (click to expand)"
+
+    ```yaml
+    --8<-- "definitions/basics-tutorial/tutorial.yaml:31:44"
+    ```
 
 This pipeline:
 
@@ -145,11 +156,11 @@ Let's break down each operation:
 
 #### Filter Operation
 
-```yaml
-- type: filter
-  if:
-    expression: value.get('temperature') > 70
-```
+??? info "Adding Filters (click to expand)"
+
+    ```yaml
+    --8<-- "definitions/basics-tutorial/tutorial.yaml:35:36"
+    ```
 
 The filter operation:
 
@@ -157,16 +168,15 @@ The filter operation:
 - Only passes messages where the expression returns `True`
 - Discards messages where the expression returns `False`
 
-#### Map Values Operation
+#### Transform Value Operation
 
-```yaml
-- type: mapValues
-  mapper:
-    expression: |
-      {"sensor": key, "temp_fahrenheit": value.get('temperature'), "temp_celsius": (value.get('temperature') - 32) * 5/9}
-```
+??? info "Adding Transforming Value Operation (click to expand)"
 
-The mapValues operation:
+    ```yaml
+    --8<-- "definitions/basics-tutorial/tutorial.yaml:37:38"
+    ```
+
+The transformValue operation:
 
 - Transforms the value of each message
 - Keeps the original key unchanged
@@ -181,11 +191,11 @@ purposes.
 
 #### Peek Operation
 
-```yaml
-- type: peek
-  forEach:
-    code: log_message(key, value, message_type="Processed")
-```
+??? info "Adding Peek Operation (click to expand)"
+
+    ```yaml
+    --8<-- "definitions/basics-tutorial/tutorial.yaml:39:43"
+    ```
 
 The peek operation:
 
@@ -196,91 +206,98 @@ The peek operation:
 
 ## Step 4: Put It All Together
 
-Let's combine all the sections into a complete KSML definition file:
+Let's combine all the sections into a complete KSML definition file. In the [Quick Start guide](quick-start.md) you created a directory
+structure containing an `examples/` directory; in this directory create a file called `tutorial.yaml` and copy
+the following content:
 
-```yaml
-streams:
-  input_stream:
-    topic: tutorial_input
-    keyType: string
-    valueType: json
-  output_stream:
-    topic: tutorial_output
-    keyType: string
-    valueType: json
+??? info "Full KSML processing definition (click to expand)"
 
-functions:
-  log_message:
-    type: forEach
-    parameters:
-      - name: message_type
-        type: string
-    code: |
-      log.info("{} message - key={}, value={}", message_type, key, value)
+    ```yaml
+    {% include "../definitions/basics-tutorial/tutorial.yaml" %}
+    ```
 
-pipelines:
-  tutorial_pipeline:
-    from: input_stream
-    via:
-      - type: filter
-        if:
-          expression: value.get('temperature') > 70
-      - type: mapValues
-        mapper:
-          expression: |
-            {"sensor": key, "temp_fahrenheit": value.get('temperature'), "temp_celsius": (value.get('temperature') - 32) * 5/9}
-      - type: peek
-        forEach:
-          code: log_message(key, value, message_type="Processed")
-    to: output_stream
+Save the file.
+We also need to make the KSML Runner aware of the new pipeline. In the `ksml-runner.yaml` you created before, there is
+a section containing the definitions; modify this part so that it looks like this:
+
+??? info "KSML Runner Configuration Update (click to expand)"
+
+    ```yaml
+    ksml:
+      definitions:
+        # format is: <namespace>: <filename> 
+        tutorial: tutorial.yaml
+    ```
+
+You can either replace the line containing `helloworld` or add the tutorial, in the latter case both pipelines will be run.
+
+## Step 5: Run Your Pipeline definition(s)
+
+Now let's run the pipeline using our Docker Compose setup. If the compose was still running, you can just restart the KSML runner to make it
+aware of the new definition:
+
+```bash
+docker compose restart ksml
 ```
 
-Save this file as `tutorial.yaml`.
+Or, if you stopped the setup, you can start the complete compose as before:
 
-## Step 5: Run Your Pipeline
+```bash
+docker compose up -d 
+```
 
-Now let's run the pipeline and see it in action:
+Check the logs to verify your pipeline(s) started:
 
-1. Make sure your Kafka environment is running
-2. Create the input and output topics:
-   ```bash
-   docker exec -it kafka kafka-topics --bootstrap-server localhost:9092 --create --topic tutorial_input --partitions 1 --replication-factor 1
-   docker exec -it kafka kafka-topics --bootstrap-server localhost:9092 --create --topic tutorial_output --partitions 1 --replication-factor 1
-   ```
-3. Run the KSML runner with your definition file:
-   ```bash
-   docker run -v $(pwd):/app -e KAFKA_BOOTSTRAP_SERVERS=kafka:9092 axual/ksml-runner:latest --definitions /app/tutorial.yaml
-   ```
-4. In another terminal, produce some test messages to the input topic:
-   ```bash
-   docker exec -it kafka kafka-console-producer --bootstrap-server localhost:9092 --topic tutorial_input --property "parse.key=true" --property "key.separator=:"
-   ```
-   Then enter messages in the format `key:value`, for example:
-   ```
-   sensor1:{"temperature": 75}
-   sensor2:{"temperature": 65}
-   sensor3:{"temperature": 80}
-   ```
-5. In a third terminal, consume messages from the output topic to see the results:
-   ```bash
-   docker exec -it kafka kafka-console-consumer --bootstrap-server localhost:9092 --topic tutorial_output --from-beginning
-   ```
+```bash
+docker compose logs ksml
+```
+
+### Step 5.1: Test with Sample Data
+
+Produce some test messages to the input topic:
+
+```bash
+docker compose exec broker kafka-console-producer.sh --bootstrap-server broker:9093 --topic temperature_data --property "parse.key=true" --property "key.separator=:"
+```
+
+Then enter messages in the format `key:value`:
+
+```
+sensor1:{"temperature": 75}
+sensor2:{"temperature": 65}
+sensor3:{"temperature": 80}
+```
+
+Press <Enter> after each record, and press Ctrl+C to exit the producer.
+
+### Step 5.2: View the Results
+
+Consume messages from the output topic to see the results:
+
+```bash
+docker compose exec broker kafka-console-consumer.sh --bootstrap-server broker:9093 --topic temperature_data_converted --from-beginning
+```
+
+You can also view the topics and messages in the Kafka UI at http://localhost:8080.
 
 You should see messages like:
 
 ```
-{"sensor":"sensor1","temp_fahrenheit":75,"temp_celsius":23.88888888888889}
-{"sensor":"sensor3","temp_fahrenheit":80,"temp_celsius":26.666666666666668}
+{"sensor":"sensor1",temp_fahrenheit":75,"temp_celsius":23.88888888888889}
+{"sensor":"sensor3",temp_fahrenheit":80,"temp_celsius":26.666666666666668}
 ```
 
-Notice that the message with temperature 65°F was filtered out, and the remaining messages have been transformed to
-include the Celsius temperature.
+Notice that:
+
+- The message with temperature 65°F was filtered out (below our 70°F threshold)
+- The remaining messages have been transformed to include both Fahrenheit and Celsius temperatures
+- You can see processing logs in the KSML container logs: `docker compose logs ksml`
 
 ## Understanding What's Happening
 
 When you run your KSML definition:
 
-1. The KSML runner parses your YAML file
+1. The KSML runner parses your `tutorial.yaml` definition
 2. It creates a Kafka Streams topology based on your pipeline definition
 3. The topology starts consuming from the input topic
 4. Each message flows through the operations you defined:
@@ -291,36 +308,36 @@ When you run your KSML definition:
 
 ## Using KSML to produce messages
 
-While you can manually produce the above messages, KSML can also generate messages for you. See below for a KSML
-definition that would randomly generate test messages every three seconds.
+While you can manually produce the above messages, KSML can also generate messages for you automatically.
 
-```yaml
-functions:
-  generate_temperature_message:
-    type: generator
-    globalCode: |
-      import random
-      sensorCounter = 0
-    code: |
-      global sensorCounter
+Create a new file called `producer.yaml` in your `examples/` directory:
 
-      key = "sensor"+str(sensorCounter)           # Set the key to return ("sensor0" to "sensor9")
-      sensorCounter = (sensorCounter+1) % 10      # Increase the counter for next iteration
+??? info "Producer Definition - producer.yaml (click to expand)"
 
-      value = {"temperature": random.randrange(150)}
-    expression: (key, value)                      # Return a message tuple with the key and value
-    resultType: (string, json)                    # Indicate the type of key and value
+    ```yaml
+    {% include "../definitions/basics-tutorial/producer.yaml" %}
+    ```
 
-producers:
-  # Produce a temperature message every 3 seconds
-  tutorial_producer:
-    generator: generate_temperature_message
-    interval: 3s
-    to:
-        topic: tutorial_input
-        keyType: string
-        valueType: json
+Now update your `ksml-runner.yaml` to include the producer definition:
+
+??? info "KSML Runner Configuration Update (click to expand)"
+
+    ```yaml
+    ksml:
+      definitions:
+        tutorial: tutorial.yaml
+        producer: producer.yaml     # Add this line
+    ```
+
+Restart the KSML Runner to load the new producer:
+
+```bash
+docker compose restart ksml
 ```
+
+You can check the runner logs (`docker compose logs ksml`) or go to the Kafka UI at [http://localhost:8080](http://localhost:8080)
+to verify that new messages are generated every 3 seconds in the `temperature_data` topic. The filtered and converted
+messages will appear on the `temperature_data_converted` topic.
 
 ## Next Steps
 
@@ -332,14 +349,8 @@ Congratulations! You've built your first KSML data pipeline. Here are some ways 
 2. Add more fields to the transformed output
 3. Create a second pipeline that processes the data differently
 
-### Explore More Advanced Concepts:
-
-- Learn about [stateful operations](../core-concepts/operations.md#stateful-operations) like aggregations and joins
-- Explore [windowing operations](../core-concepts/operations.md#windowing-operations) for time-based processing
-- Try working with different [data formats](../core-concepts/streams-and-data-types.md)
-
 ### Continue Your Learning Journey:
 
 - Check out the [beginner tutorials](../tutorials/beginner/index.md) for more guided examples
-- Explore the [examples library](../resources/examples-library.md) for inspiration
-- Dive into the [reference documentation](../reference/operations-reference.md) to learn about all available operations
+- Dive into the [reference documentation](../reference/operation-reference.md) to learn about all available
+  operations

@@ -514,8 +514,8 @@ pipelines:
 
 ## Related Resources
 
-- [KSML Language Reference](../reference/language-reference.md)
-- [Operations Reference](../reference/operations-reference.md)
-- [Functions Reference](../reference/functions-reference.md)
+- [KSML Definition Reference](../reference/definition-reference.md) for a full explanation of the KSML definition syntax
+- [Operations Reference](../reference/operation-reference.md)
+- [Functions Reference](../reference/function-reference.md)
 - [Configuration Reference](../reference/configuration-reference.md)
 - [Troubleshooting Guide](troubleshooting.md)

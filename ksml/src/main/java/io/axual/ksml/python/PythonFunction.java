@@ -70,12 +70,17 @@ public class PythonFunction extends UserFunction {
         final var pyCode = generatePythonCode(namespace, type, name, definition);
         function = context.registerFunction(pyCode, name + "_caller");
         if (function == null) {
+            final var pyCodeLines = pyCode.split("\n");
+            final var builder = new StringBuilder();
+            for (int index = 1; index <= pyCodeLines.length; index++) {
+                builder.append(index).append("  ").append(pyCodeLines[index - 1]).append("\n");
+            }
             log.error("""
                     Function {} {}
                     Error in generated Python code:
                     
                     {}
-                    """, namespace, name, pyCode);
+                    """, namespace, name, builder);
             throw new ExecutionException("Error in function: %s.%s".formatted(namespace, name));
         }
     }
@@ -123,7 +128,7 @@ public class PythonFunction extends UserFunction {
             }
         } catch (Exception e) {
             logCall(parameters, null);
-            throw FatalError.reportAndExit(new TopologyException("Error while executing function %s.%s : %s".formatted(namespace, name, e.getMessage())));
+            throw FatalError.reportAndExit(new TopologyException("Error while executing function %s.%s : %s".formatted(namespace, name, e.getMessage()), e));
         }
     }
 
@@ -140,6 +145,7 @@ public class PythonFunction extends UserFunction {
     private String generatePythonCode(String namespace, String type, String name, FunctionDefinition definition) {
         // Prepend two spaces of indentation before the function code
         String[] functionCode = Arrays.stream(definition.code()).map(line -> "  " + line).toArray(String[]::new);
+        String[] expressionCode = Arrays.stream(definition.expression()).map(line -> "    " + line).toArray(String[]::new);
 
         // Prepare a list of parameters for the function definition
         String[] defParams = Arrays.stream(definition.parameters()).map(p -> p.name() + (p.isOptional() ? "=None" : "")).toArray(String[]::new);
@@ -167,15 +173,21 @@ public class PythonFunction extends UserFunction {
                 .map(p -> "  if " + p.name() + " is None:\n    " + p.name() + " = " + (p.type() == DataString.DATATYPE ? QUOTE : "") + p.defaultValue() + (p.type() == DataString.DATATYPE ? QUOTE : "") + "\n")
                 .collect(Collectors.joining());
 
-        // Prepare function (if any) and expression from the function definition
+        // Prepare the return statement
+        final var returnStatement = "return" +
+                (definition.resultType() != null && definition.resultType().dataType() != DataNull.DATATYPE
+                        ? " " + String.join("\n", expressionCode) + "\n"
+                        : "")
+                + "\n";
+
+        // Compose the function (if any) and the return statement together
         final var functionAndExpression = "def " + name + "(" + String.join(",", defParams) + "):\n" +
                 includeGlobals +
                 initFunctionLocalVariables(2, loggerName(namespace, type, name)) +
                 assignStores +
                 initializeOptionalParams +
                 String.join("\n", functionCode) + "\n" +
-                "  return" + (definition.resultType() != null && definition.resultType().dataType() != DataNull.DATATYPE ? " " + definition.expression() : "") + "\n" +
-                "\n";
+                "  " + returnStatement + "\n";
 
         // Prepare the actual caller for the code
         final var convertedParams = Arrays.stream(callParams).map(p -> "convert_to_python(" + p + ")").toList();

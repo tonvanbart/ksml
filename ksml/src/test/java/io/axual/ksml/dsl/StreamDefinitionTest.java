@@ -40,7 +40,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class StreamDefinitionTest {
@@ -53,13 +52,12 @@ class StreamDefinitionTest {
 
     @Test
     void testStreamDefinition() {
-        when(mockNotation.name()).thenReturn(UserType.DEFAULT_NOTATION);
-        ExecutionContext.INSTANCE.notationLibrary().register(mockNotation);
+        ExecutionContext.INSTANCE.notationLibrary().register(UserType.DEFAULT_NOTATION, mockNotation);
 
         final var stringType = UserTypeParser.parse("string");
 
         // given a StreamDefinition
-        final var streamDefinition = new StreamDefinition("topic", stringType, stringType, null, null);
+        final var streamDefinition = new StreamDefinition("topic", stringType, stringType, null, null, null);
         final var resources = new TopologyResources("test");
 
         final var context = new TopologyBuildContext(builder, resources);

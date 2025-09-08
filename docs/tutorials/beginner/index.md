@@ -6,9 +6,9 @@ Each tutorial provides step-by-step instructions and explanations to help you un
 
 ## Available Tutorials
 
-### [Building Your First KSML Data Pipeline](../../getting-started/basics-tutorial.md)
+### [KSML Basics Tutorial](../../getting-started/basics-tutorial.md)
 
-This tutorial guides you through building a simple data pipeline that filters and transforms temperature data. You'll learn:
+If you did not complete this yet, this tutorial guides you through building a simple data pipeline that filters and transforms temperature data. You'll learn:
 
 - How to define streams for input and output
 - How to create and use functions
@@ -44,10 +44,10 @@ This tutorial focuses on how to add effective logging and monitoring to your KSM
 
 ## Learning Path
 
-We recommend following these tutorials in order, as each one builds on concepts introduced in previous tutorials. After completing these beginner tutorials, you'll be ready to move on to the [Intermediate Tutorials](../intermediate/index.md), which cover more advanced topics like aggregations, joins, and windowing operations.
+We recommend following these tutorials in order, as each one builds on concepts introduced in previous tutorials.
 
-## Additional Resources
+## Next Steps
 
-- [KSML Core Concepts](../../core-concepts/streams-and-data-types.md) - Deeper explanations of KSML components
-- [Examples Library](../../resources/examples-library.md) - Ready-to-use examples for common patterns
-- [Operations Reference](../../reference/operations-reference.md) - Complete reference for all KSML operations
+After completing these beginner tutorials, you're ready to move on to more advanced topics:
+
+👉 **Continue to [Intermediate Tutorials](../intermediate/index.md)** to learn about aggregations, joins, and windowing operations.

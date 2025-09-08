@@ -25,7 +25,23 @@ import io.axual.ksml.data.object.*;
 import io.axual.ksml.data.schema.*;
 import io.axual.ksml.data.type.*;
 
+import java.util.List;
+
+/**
+ * Maps between KSML DataType and DataSchema representations.
+ * This implementation provides a bidirectional conversion used throughout the
+ * data layer to describe and materialize schemas from types and vice versa.
+ */
 public class DataTypeDataSchemaMapper implements DataSchemaMapper<DataType> {
+    /**
+     * Converts a DataType into a DataSchema.
+     *
+     * @param namespace optional namespace to use for named schema types, may be null
+     * @param name      optional name to use for named schema types, may be null
+     * @param type      the DataType to convert
+     * @return the resulting DataSchema
+     * @throws SchemaException if the data type can not be converted into a schema
+     */
     public DataSchema toDataSchema(String namespace, String name, DataType type) {
         if (type == DataType.UNKNOWN) return DataSchema.ANY_SCHEMA;
         if (type == DataNull.DATATYPE) return DataSchema.NULL_SCHEMA;
@@ -43,11 +59,12 @@ public class DataTypeDataSchemaMapper implements DataSchemaMapper<DataType> {
             return new EnumSchema(null, enumType.name(), "", enumType.symbols());
         if (type instanceof ListType listType)
             return new ListSchema(toDataSchema(listType.valueType()));
-        // Check structs first, since they are a subclass of maps
-        if (type instanceof StructType structType)
-            return structType.schema() != null ? new StructSchema(structType.schema()) : StructSchema.SCHEMALESS;
         if (type instanceof MapType mapType)
             return new MapSchema(toDataSchema(namespace, name, mapType.valueType()));
+        if (type instanceof StructType structType)
+            return structType.schema() != null ? new StructSchema(structType.schema()) : StructSchema.SCHEMALESS;
+        if (type instanceof TupleType tupleType)
+            return new TupleSchema(tupleType, this);
         if (type instanceof UnionType unionType) {
             var fields = new DataField[unionType.memberTypes().length];
             for (int index = 0; index < unionType.memberTypes().length; index++) {
@@ -63,6 +80,13 @@ public class DataTypeDataSchemaMapper implements DataSchemaMapper<DataType> {
         throw new SchemaException("Can not convert dataType " + type + " to a schema");
     }
 
+    /**
+     * Converts a DataSchema into a DataType.
+     *
+     * @param schema the DataSchema to convert
+     * @return the resulting DataType
+     * @throws SchemaException if the schema can not be converted into a data type
+     */
     public DataType fromDataSchema(DataSchema schema) {
         if (schema == null) return DataType.UNKNOWN;
         if (schema == DataSchema.ANY_SCHEMA) return DataType.UNKNOWN;
@@ -77,8 +101,11 @@ public class DataTypeDataSchemaMapper implements DataSchemaMapper<DataType> {
         if (schema == DataSchema.STRING_SCHEMA) return DataString.DATATYPE;
         if (schema instanceof EnumSchema enumSchema) return new EnumType(enumSchema.symbols());
         if (schema instanceof ListSchema listSchema) return new ListType(fromDataSchema(listSchema.valueSchema()));
-        if (schema instanceof StructSchema structSchema) return new StructType(structSchema);
         if (schema instanceof MapSchema mapSchema) return new MapType(fromDataSchema(mapSchema.valueSchema()));
+        // Process TupleSchema first, since it inherits from StructSchema
+        if (schema instanceof TupleSchema tupleSchema)
+            return new TupleType(convertFieldsToSubTypes(tupleSchema.fields()));
+        if (schema instanceof StructSchema structSchema) return new StructType(structSchema);
         if (schema instanceof UnionSchema unionSchema) {
             var types = new UnionType.MemberType[unionSchema.memberSchemas().length];
             for (int index = 0; index < unionSchema.memberSchemas().length; index++) {
@@ -92,5 +119,13 @@ public class DataTypeDataSchemaMapper implements DataSchemaMapper<DataType> {
         }
 
         throw new SchemaException("Can not convert schema " + schema + " to a dataType");
+    }
+
+    private DataType[] convertFieldsToSubTypes(List<DataField> fields) {
+        var result = new DataType[fields.size()];
+        for (int index = 0; index < fields.size(); index++) {
+            result[index] = fromDataSchema(fields.get(index).schema());
+        }
+        return result;
     }
 }

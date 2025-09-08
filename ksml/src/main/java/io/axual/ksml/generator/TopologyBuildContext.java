@@ -142,7 +142,7 @@ public class TopologyBuildContext {
                 if (topicDefinition instanceof StreamDefinition || topicDefinition instanceof TableDefinition || topicDefinition instanceof GlobalTableDefinition) {
                     result = getStreamWrapper(topicDefinition, getStreamWrapperClass(topicDefinition, null));
                 } else {
-                    result = getStreamWrapper(new StreamDefinition(topicDefinition.topic(), topicDefinition.keyType(), topicDefinition.valueType(), topicDefinition.tsExtractor(), topicDefinition.resetPolicy()));
+                    result = getStreamWrapper(new StreamDefinition(topicDefinition.topic(), topicDefinition.keyType(), topicDefinition.valueType(), topicDefinition.resetPolicy(), topicDefinition.tsExtractor(), topicDefinition.partitioner()));
                 }
             }
 
@@ -215,8 +215,8 @@ public class TopologyBuildContext {
             final var streamKey = new StreamDataType(tableDefinition.keyType(), true);
             final var streamValue = new StreamDataType(tableDefinition.valueType(), false);
             final var store = tableDefinition.store() != null
-                    ? tableDefinition.store()
-                    // Set up dummy store for tables, mapping to the topic itself, so we don't require an extra state store topic
+                    ? tableDefinition.store().with(tableDefinition.keyType(), tableDefinition.valueType())
+                    // Set up a store for tables, mapping to the topic itself, so we don't require an extra state store topic
                     : new KeyValueStateStoreDefinition(tableDefinition.topic(), false, false, false, Duration.ofSeconds(900), Duration.ofSeconds(60), streamKey.userType(), streamValue.userType(), false, false);
             final var mat = StoreUtil.materialize(store);
             final var consumed = consumedOf(name, mat.keySerde(), mat.valueSerde(), def.tsExtractor(), def.resetPolicy());
@@ -227,8 +227,8 @@ public class TopologyBuildContext {
             final var streamKey = new StreamDataType(globalTableDefinition.keyType(), true);
             final var streamValue = new StreamDataType(globalTableDefinition.valueType(), false);
             final var store = globalTableDefinition.store() != null
-                    ? globalTableDefinition.store()
-                    // Set up dummy store for globalTables, mapping to the topic itself, so we don't require an extra state store topic
+                    ? globalTableDefinition.store().with(globalTableDefinition.keyType(), globalTableDefinition.valueType())
+                    // Set up a store for globalTables, mapping to the topic itself, so we don't require an extra state store topic
                     : new KeyValueStateStoreDefinition(globalTableDefinition.topic(), false, false, false, Duration.ofSeconds(900), Duration.ofSeconds(60), streamKey.userType(), streamValue.userType(), false, false);
             final var mat = StoreUtil.materialize(store);
             final var consumed = consumedOf(name, mat.keySerde(), mat.valueSerde(), def.tsExtractor(), def.resetPolicy());

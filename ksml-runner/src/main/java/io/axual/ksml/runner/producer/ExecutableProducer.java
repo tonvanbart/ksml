@@ -22,6 +22,7 @@ package io.axual.ksml.runner.producer;
 
 import io.axual.ksml.client.serde.ResolvingSerializer;
 import io.axual.ksml.data.mapper.DataObjectConverter;
+import io.axual.ksml.data.object.DataList;
 import io.axual.ksml.data.object.DataObject;
 import io.axual.ksml.data.object.DataTuple;
 import io.axual.ksml.definition.ProducerDefinition;
@@ -33,6 +34,7 @@ import io.axual.ksml.python.PythonFunction;
 import io.axual.ksml.type.UserType;
 import io.axual.ksml.user.UserFunction;
 import io.axual.ksml.user.UserGenerator;
+import io.axual.ksml.user.UserStreamPartitioner;
 import io.axual.ksml.util.Pair;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -42,9 +44,7 @@ import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.serialization.Serializer;
 
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -61,10 +61,12 @@ public class ExecutableProducer {
     private final String topic;
     private final UserType keyType;
     private final UserType valueType;
+    private final UserStreamPartitioner partitioner;
     private final Serializer<Object> keySerializer;
     private final Serializer<Object> valueSerializer;
     private long batchCount = 0;
     private boolean stopProducing = false;
+    private final List<Pair<DataObject, DataObject>> messageQueue = new LinkedList<>();
 
     private ExecutableProducer(UserFunction generator,
                                ProducerStrategy producerStrategy,
@@ -72,6 +74,7 @@ public class ExecutableProducer {
                                String topic,
                                UserType keyType,
                                UserType valueType,
+                               UserFunction partitioner,
                                Serializer<Object> keySerializer,
                                Serializer<Object> valueSerializer) {
         this.name = generator.name;
@@ -80,6 +83,7 @@ public class ExecutableProducer {
         this.topic = topic;
         this.keyType = keyType;
         this.valueType = valueType;
+        this.partitioner = partitioner != null ? new UserStreamPartitioner(partitioner, tags) : null;
         this.keySerializer = keySerializer;
         this.valueSerializer = valueSerializer;
     }
@@ -106,6 +110,9 @@ public class ExecutableProducer {
         final var generator = gen.name() != null
                 ? PythonFunction.forGenerator(context, namespace, gen.name(), gen)
                 : PythonFunction.forGenerator(context, namespace, name, gen);
+        final var partitioner = target.partitioner() != null
+                ? PythonFunction.forFunction(context, namespace, target.partitioner().name(), target.partitioner())
+                : null;
 
         // Initialize the producer strategy
         final var producerStrategy = new ProducerStrategy(context, namespace, name, tags, producerDefinition);
@@ -119,7 +126,7 @@ public class ExecutableProducer {
         final var valueSerializer = new ResolvingSerializer<>(valueSerde.serializer(), kafkaConfig);
 
         // Set up the producer
-        return new ExecutableProducer(generator, producerStrategy, tags, target.topic(), target.keyType(), target.valueType(), keySerializer, valueSerializer);
+        return new ExecutableProducer(generator, producerStrategy, tags, target.topic(), target.keyType(), target.valueType(), partitioner, keySerializer, valueSerializer);
     }
 
     public void produceMessages(Producer<byte[], byte[]> producer) {
@@ -127,8 +134,22 @@ public class ExecutableProducer {
         final var futures = new ArrayList<Future<RecordMetadata>>();
         try {
             for (final var message : messages) {
-                ProducerRecord<byte[], byte[]> rec = new ProducerRecord<>(topic, message.left(), message.right());
-                futures.add(producer.send(rec));
+                if (partitioner != null) {
+                    // If a partitioner is defined, then call the function and generate producer records for every
+                    // partition the message is sent to
+                    final var numPartitions = producer.partitionsFor(topic).size();
+                    Optional<Set<Integer>> partitions = partitioner.partitions(topic, message.left(), message.right(), numPartitions);
+                    if (partitions.isPresent()) {
+                        for (int partition : partitions.get()) {
+                            ProducerRecord<byte[], byte[]> rec = new ProducerRecord<>(topic, partition, message.left(), message.right());
+                            futures.add(producer.send(rec));
+                        }
+                    }
+                } else {
+                    // No partitioner is defined, so create just one producer record without specifying a partition
+                    ProducerRecord<byte[], byte[]> rec = new ProducerRecord<>(topic, message.left(), message.right());
+                    futures.add(producer.send(rec));
+                }
             }
 
             batchCount++;
@@ -187,33 +208,58 @@ public class ExecutableProducer {
     }
 
     private Pair<DataObject, DataObject> generateMessage() {
-        final var result = generator.apply();
-        if (result instanceof DataTuple tuple && tuple.elements().size() == 2) {
-            var key = tuple.elements().get(0);
-            var value = tuple.elements().get(1);
+        // Get a message for the queue of generated messages, or generate new messages first and then fetch
+        // from the queue
+        if (messageQueue.isEmpty()) messageQueue.addAll(generateMessages());
+        // Return the first element of the queue, or null if none present
+        return messageQueue.isEmpty() ? null : messageQueue.removeFirst();
+    }
 
-            if (producerStrategy.validateMessage(key, value)) {
-                // keep produced key and value to determine rescheduling later
-                key = DATA_OBJECT_CONVERTER.convert(DEFAULT_NOTATION, key, keyType);
-                value = DATA_OBJECT_CONVERTER.convert(DEFAULT_NOTATION, value, valueType);
-
-                var okay = true;
-
-                if (key != null && !keyType.dataType().isAssignableFrom(key.type())) {
-                    log.error("Wrong topic key type: expected={} key={}", keyType, key.type());
-                    okay = false;
+    private List<Pair<DataObject, DataObject>> generateMessages() {
+        final var result = new ArrayList<Pair<DataObject, DataObject>>();
+        final var generated = generator.apply();
+        if (generated instanceof DataTuple tuple && tuple.elements().size() == 2) {
+            final var msg = shapeMessage(tuple);
+            if (msg != null) result.add(msg);
+        }
+        if (generated instanceof DataList list) {
+            for (DataObject element : list) {
+                if (element instanceof DataTuple tuple && tuple.elements().size() == 2) {
+                    final var msg = shapeMessage(tuple);
+                    if (msg != null) result.add(msg);
+                } else {
+                    log.warn("Skipping invalid message: {}", element);
                 }
-                if (value != null && !valueType.dataType().isAssignableFrom(value.type())) {
-                    log.error("Wrong topic value type: expected={} value={}", valueType, value.type());
-                    okay = false;
-                }
-
-                if (okay) {
-                    return new Pair<>(key, value);
-                }
-            } else {
-                log.warn("Skipping invalid message: key={} value={}", key, value);
             }
+        }
+        return result;
+    }
+
+    private Pair<DataObject, DataObject> shapeMessage(DataTuple tuple) {
+        var key = tuple.elements().get(0);
+        var value = tuple.elements().get(1);
+
+        if (producerStrategy.validateMessage(key, value)) {
+            // keep produced key and value to determine rescheduling later
+            key = DATA_OBJECT_CONVERTER.convert(DEFAULT_NOTATION, key, keyType);
+            value = DATA_OBJECT_CONVERTER.convert(DEFAULT_NOTATION, value, valueType);
+
+            var okay = true;
+
+            if (key != null && !keyType.dataType().isAssignableFrom(key.type())) {
+                log.error("Wrong topic key type: expected={} key={}", keyType, key.type());
+                okay = false;
+            }
+            if (value != null && !valueType.dataType().isAssignableFrom(value.type())) {
+                log.error("Wrong topic value type: expected={} value={}", valueType, value.type());
+                okay = false;
+            }
+
+            if (okay) {
+                return new Pair<>(key, value);
+            }
+        } else {
+            log.warn("Skipping invalid message: key={} value={}", key, value);
         }
         return null;
     }
