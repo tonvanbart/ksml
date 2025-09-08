@@ -3,5 +3,10 @@
     "version": "SNAPSHOT-dev",
     "title": "SNAPSHOT-dev",
     "aliases": []
+  },
+  {
+    "version": "1.0.8",
+    "title": "1.0.8",
+    "aliases": []
   }
 ]
