@@ -1,10 +1,5 @@
 [
   {
-    "version": "SNAPSHOT-dev",
-    "title": "SNAPSHOT-dev",
-    "aliases": []
-  },
-  {
     "version": "dev-branch",
     "title": "dev-branch",
     "aliases": [
