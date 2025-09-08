@@ -5,6 +5,13 @@
     "aliases": []
   },
   {
+    "version": "dev-branch",
+    "title": "dev-branch",
+    "aliases": [
+      "jeroen-doc-old-version"
+    ]
+  },
+  {
     "version": "1.0.8",
     "title": "1.0.8",
     "aliases": []
