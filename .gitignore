@@ -10,7 +10,7 @@ target/
 **/.settings
 **/.factorypath
 
-CLAUDE.md
+#CLAUDE.md
 .claude
 
 workspace/*
