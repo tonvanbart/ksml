@@ -69,6 +69,16 @@
             <groupId>io.axual.utils</groupId>
             <artifactId>axual-header-cleaning</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.github.victools</groupId>
+            <artifactId>jsonschema-generator</artifactId>
+            <version>4.35.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.victools</groupId>
+            <artifactId>jsonschema-module-jackson</artifactId>
+            <version>4.35.0</version>
+        </dependency>
 
         <!-- TEST dependencies -->
         <dependency>

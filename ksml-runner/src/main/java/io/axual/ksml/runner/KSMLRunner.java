@@ -20,8 +20,11 @@ package io.axual.ksml.runner;
  * =========================LICENSE_END==================================
  */
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.github.victools.jsonschema.generator.*;
+import com.github.victools.jsonschema.module.jackson.JacksonModule;
 import io.axual.ksml.client.serde.ResolvingDeserializer;
 import io.axual.ksml.client.serde.ResolvingSerializer;
 import io.axual.ksml.data.mapper.DataObjectFlattener;
@@ -58,6 +61,8 @@ import org.apache.kafka.streams.state.HostInfo;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -68,6 +73,7 @@ import java.util.concurrent.*;
 public class KSMLRunner {
     private static final String DEFAULT_CONFIG_FILE_SHORT = "ksml-runner.yaml";
     private static final String WRITE_KSML_SCHEMA_ARGUMENT = "--schema";
+    private static final String WRITE_RUNNER_CONFIG_SCHEMA_ARGUMENT = "--runner-schema";
 
     public static void main(String[] args) {
         try {
@@ -76,9 +82,17 @@ public class KSMLRunner {
 
             // Check if we need to output the schema and then exit
             if (args.length >= 1 && WRITE_KSML_SCHEMA_ARGUMENT.equals(args[0])) {
-                log.info("Generating schema and exiting");
+                log.info("Generating KSML topology schema and exiting");
                 var filename = args.length > 1 ? args[1] : null;
                 printJsonSchema(filename);
+                return;
+            }
+
+            // Check if we need to output the runner config schema and then exit
+            if (args.length >= 1 && WRITE_RUNNER_CONFIG_SCHEMA_ARGUMENT.equals(args[0])) {
+                log.info("Generating runner config schema and exiting");
+                var filename = args.length > 1 ? args[1] : null;
+                printRunnerConfigSchema(filename);
                 return;
             }
 
@@ -377,6 +391,38 @@ public class KSMLRunner {
             }
         } else {
             System.out.println(schema);
+        }
+    }
+
+    private static void printRunnerConfigSchema(String filename) {
+        // Generate JSON schema for ksml-runner.yaml configuration file
+        try {
+            SchemaGeneratorConfigBuilder configBuilder = new SchemaGeneratorConfigBuilder(
+                    SchemaVersion.DRAFT_2020_12,
+                    OptionPreset.PLAIN_JSON
+            ).with(new JacksonModule());
+
+            SchemaGeneratorConfig config = configBuilder.build();
+            SchemaGenerator generator = new SchemaGenerator(config);
+            JsonNode schema = generator.generateSchema(KSMLRunnerConfig.class);
+
+            ObjectMapper mapper = new ObjectMapper();
+            String schemaJson = mapper.writerWithDefaultPrettyPrinter()
+                    .writeValueAsString(schema);
+
+            if (filename != null) {
+                Files.writeString(Path.of(filename), schemaJson);
+                log.info("Runner config JSON schema written to file: {}", filename);
+            } else {
+                System.out.println(schemaJson);
+            }
+        } catch (Exception e) {
+            log.atError()
+                    .setMessage("""
+                            Error generating runner config JSON schema: {}
+                            """)
+                    .addArgument(e::getMessage)
+                    .log();
         }
     }
 

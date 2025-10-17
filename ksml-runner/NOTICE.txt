@@ -1,10 +1,11 @@
 
-Lists of 200 third-party dependencies.
+Lists of 203 third-party dependencies.
      (Eclipse Public License - v 1.0) (GNU Lesser General Public License) Logback Classic Module (ch.qos.logback:logback-classic:1.5.18 - http://logback.qos.ch/logback-classic)
      (Eclipse Public License - v 1.0) (GNU Lesser General Public License) Logback Core Module (ch.qos.logback:logback-core:1.5.18 - http://logback.qos.ch/logback-core)
      (The Apache Software License, Version 2.0) Handy URI Templates (com.damnhandy:handy-uri-templates:2.1.8 - https://github.com/damnhandy/Handy-URI-Templates)
      (MIT License) minimal-json (com.eclipsesource.minimal-json:minimal-json:0.9.5 - https://github.com/ralfstx/minimal-json)
      (Apache License, Version 2.0) Internet Time Utility (com.ethlo.time:itu:1.10.2 - https://github.com/ethlo/itu)
+     (Apache License, Version 2.0) ClassMate (com.fasterxml:classmate:1.5.1 - https://github.com/FasterXML/java-classmate)
      (The Apache Software License, Version 2.0) Jackson-annotations (com.fasterxml.jackson.core:jackson-annotations:2.18.3 - https://github.com/FasterXML/jackson)
      (The Apache Software License, Version 2.0) Jackson-core (com.fasterxml.jackson.core:jackson-core:2.20.0 - https://github.com/FasterXML/jackson-core)
      (The Apache Software License, Version 2.0) jackson-databind (com.fasterxml.jackson.core:jackson-databind:2.18.3 - https://github.com/FasterXML/jackson)
@@ -24,6 +25,8 @@ Lists of 200 third-party dependencies.
      (Apache License, Version 2.0) everit-json-schema (com.github.erosb:everit-json-schema:1.14.5 - https://github.com/erosb/everit-json-schema)
      (MIT) json-sKema (com.github.erosb:json-sKema:0.20.0 - https://github.com/erosb/json-sKema)
      (BSD 2-Clause License) zstd-jni (com.github.luben:zstd-jni:1.5.6-6 - https://github.com/luben/zstd-jni)
+     (The Apache License, Version 2.0) Java JSON Schema Generator (com.github.victools:jsonschema-generator:4.35.0 - https://github.com/victools/jsonschema-generator)
+     (The Apache License, Version 2.0) Java JSON Schema Generator Module – jackson (com.github.victools:jsonschema-module-jackson:4.35.0 - https://github.com/victools/jsonschema-generator)
      (Apache-2.0) proto-google-common-protos (com.google.api.grpc:proto-google-common-protos:2.53.0 - https://github.com/googleapis/sdk-platform-java)
      (The Apache Software License, Version 2.0) FindBugs-jsr305 (com.google.code.findbugs:jsr305:3.0.2 - http://findbugs.sourceforge.net/)
      (Apache-2.0) Gson (com.google.code.gson:gson:2.8.9 - https://github.com/google/gson/gson)
