@@ -402,6 +402,16 @@ public class KSMLRunner {
                     OptionPreset.PLAIN_JSON
             ).with(new JacksonModule());
 
+            // Configure to handle nested types and additionalProperties
+            configBuilder.forTypesInGeneral()
+                    .withAdditionalPropertiesResolver(scope -> {
+                        // Check if field has @JsonAnySetter - if so, allow additional properties
+                        if (scope.getType().getErasedType().getName().contains("KafkaConfig")) {
+                            return scope.getContext().resolve(String.class);
+                        }
+                        return null;
+                    });
+
             SchemaGeneratorConfig config = configBuilder.build();
             SchemaGenerator generator = new SchemaGenerator(config);
             JsonNode schema = generator.generateSchema(KSMLRunnerConfig.class);

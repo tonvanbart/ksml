@@ -34,11 +34,11 @@ import lombok.extern.slf4j.Slf4j;
 @Jacksonized
 public class ApplicationServerConfig {
     private static final String DEFAULT_HOSTNAME = "0.0.0.0";
-    private static final String DEFAULT_PORT = "8080";
+    private static final Integer DEFAULT_PORT = 8080;
 
     private boolean enabled;
     private String host;
-    private String port;
+    private Integer port;
 
     public String getApplicationServer() {
         if (!enabled) return null;
@@ -52,6 +52,6 @@ public class ApplicationServerConfig {
 
     public Integer getPort() {
         if (!enabled) return null;
-        return (port != null ? Integer.parseInt(port) : Integer.parseInt(DEFAULT_PORT));
+        return (port != null ? port : DEFAULT_PORT);
     }
 }

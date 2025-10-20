@@ -1,3 +1,5 @@
+# $schema: ../ksml-runner-schema-3.json
+
 ksml:
   # The examples directory is mounted to /ksml in the Docker container
   configDirectory: .              # When not set defaults to the working directory
