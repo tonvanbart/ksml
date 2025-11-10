@@ -41,6 +41,7 @@ import org.apache.kafka.common.config.ConfigDef;
 import org.apache.kafka.common.utils.Utils;
 import org.apache.kafka.streams.*;
 
+import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiFunction;
@@ -74,6 +75,7 @@ public class KafkaStreamsRunner implements Runner {
      * Configuration record for the KafkaStreamsRunner.
      *
      * @param definitions         Map of topology definitions to be used in the Kafka Streams application
+     * @param definitionFilePaths Map of topology definition names to their file directories
      * @param storageDirectory    Directory where Kafka Streams will store its state
      * @param appServer           Configuration for the application server (used for interactive queries)
      * @param kafkaConfig         Kafka configuration properties
@@ -81,17 +83,20 @@ public class KafkaStreamsRunner implements Runner {
      */
     @Builder
     public record Config(Map<String, TopologyDefinition> definitions,
+                         Map<String, Path> definitionFilePaths,
                          String storageDirectory,
                          ApplicationServerConfig appServer,
                          Map<String, String> kafkaConfig,
                          PythonContextConfig pythonContextConfig) {
         public Config(
                 final Map<String, TopologyDefinition> definitions,
+                final Map<String, Path> definitionFilePaths,
                 final String storageDirectory,
                 final ApplicationServerConfig appServer,
                 final Map<String, String> kafkaConfig,
                 final PythonContextConfig pythonContextConfig) {
             this.definitions = definitions;
+            this.definitionFilePaths = definitionFilePaths != null ? definitionFilePaths : new HashMap<>();
             this.storageDirectory = storageDirectory;
             this.appServer = appServer;
 
@@ -133,7 +138,7 @@ public class KafkaStreamsRunner implements Runner {
         final var topologyConfig = new TopologyConfig(streamsConfig);
         final var streamsBuilder = new StreamsBuilder(topologyConfig);
         var optimize = streamsProps.getOrDefault(StreamsConfig.TOPOLOGY_OPTIMIZATION_CONFIG, StreamsConfig.OPTIMIZE);
-        final var topologyGenerator = new TopologyGenerator(applicationId, (String) optimize, config.pythonContextConfig());
+        final var topologyGenerator = new TopologyGenerator(applicationId, (String) optimize, config.pythonContextConfig(), config.definitionFilePaths());
         final var topology = topologyGenerator.create(streamsBuilder, config.definitions);
         final var topologyDesc = topology.describe();
         final var ksmlTagEnricher = KsmlTagEnricher.from(topologyDesc);

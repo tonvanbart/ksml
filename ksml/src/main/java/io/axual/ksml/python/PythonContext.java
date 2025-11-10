@@ -28,6 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.graalvm.polyglot.*;
 import org.graalvm.polyglot.io.IOAccess;
 
+import java.nio.file.Path;
 import java.util.List;
 
 @Slf4j
@@ -42,9 +43,16 @@ public class PythonContext {
     private final Context context;
     @Getter
     private final DataObjectConverter converter;
+    @Getter
+    private final Path baseDirectory;
 
     public PythonContext(PythonContextConfig config) {
+        this(config, null);
+    }
+
+    public PythonContext(PythonContextConfig config, Path baseDirectory) {
         this.converter = new DataObjectConverter();
+        this.baseDirectory = baseDirectory;
 
         log.debug("Setting up new Python context: {}", config);
         try {
