@@ -2211,7 +2211,7 @@
 <h2 id="python-code-options">Python Code Options</h2>
 <h3 id="1-inline-code">1. Inline Code</h3>
 <p>The simplest approach is to write Python code directly in your YAML file:</p>
-<details class="example">
+<details class="info">
 <summary>Inline code example (click to expand)</summary>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># This example shows how to filter messages from a simple stream. Here we only let &quot;blue sensors&quot; pass and discard</span>
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="c1"># other messages after logging.</span>
@@ -2253,7 +2253,7 @@
 <p><strong>Use when:</strong> Logic is short and specific to one function.</p>
 <h3 id="2-global-code">2. Global Code</h3>
 <p>Define reusable functions in a <code>globalCode</code> block that can be referenced by multiple functions:</p>
-<details class="example">
+<details class="info">
 <summary>Global code example (click to expand)</summary>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># This example shows how to filter messages from a simple stream using a function defined in globalCode.</span>
 <a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="c1"># Here we only let &quot;blue sensors&quot; pass and discard other messages after logging.</span>
@@ -2297,7 +2297,7 @@
 <p><strong>Use when:</strong> Multiple functions share common logic or utilities.</p>
 <h3 id="3-python-module-imports">3. Python Module Imports</h3>
 <p>For advanced scenarios, import Python modules using <code>globalCode</code>:</p>
-<details class="example">
+<details class="info">
 <summary>Python module import example (click to expand)</summary>
 <p><strong>YAML definition:</strong>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># This example shows how to filter messages from a simple stream. Here we only let &quot;blue sensors&quot; pass and discard</span>
