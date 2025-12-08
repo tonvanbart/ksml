@@ -2328,11 +2328,11 @@
 <a id="__codelineno-1-37" name="__codelineno-1-37" href="#__codelineno-1-37"></a><span class="w">    </span><span class="nt">to</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sensor_filtered</span>
 </code></pre></div>
 </details>
+<p><strong>Use when:</strong> Multiple functions share common logic or utilities.</p>
 <h4 id="a-note-on-globalcode-vs-code">A note on <code>globalCode</code> vs <code>code</code></h4>
-<p>Be aware that code in a <code>globalCode</code> block will be executed once, whereas code in a <code>code</code> block will be executed for every message.
+<p>Be aware that code in a <code>globalCode</code> block will be evaluated once, whereas code in a <code>code</code> block will be executed for every message.
 This means that for example <code>import</code> statements <em>should not</em> be in the <code>code</code> block, as doing so will carry a significant runtime overhead.<br>
 <em>One time initializations and <code>import</code> statements should always be in <code>globalCode</code>.</em></p>
-<p><strong>Use when:</strong> Multiple functions share common logic or utilities.</p>
 <h3 id="3-python-module-imports">3. Python Module Imports</h3>
 <p>For advanced scenarios, import Python modules using <code>globalCode</code>:</p>
 <details class="info">
