@@ -1,0 +1,14 @@
+pipelines:
+  main:
+    from: sensor_source
+    via:
+    - type: transformValue
+      mapper:
+        resultType: json
+        code: 'value = None
+
+          key = "Transformed "
+
+          '
+        expression: value
+    to: sensor_copy

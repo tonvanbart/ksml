@@ -1,0 +1,11 @@
+pipelines:
+  main:
+    from: test_input
+    via:
+    - type: transformKeyValue
+      mapper:
+        code: 'return (value[''city''], value[''type''] + '' '' + value[''value''])
+
+          '
+        resultType: (string,string)
+    to: test_output

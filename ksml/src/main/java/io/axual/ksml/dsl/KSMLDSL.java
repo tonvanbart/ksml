@@ -281,6 +281,33 @@ public class KSMLDSL {
         public static final String WINDOW_BY_SESSION = "windowBySession";
     }
 
+    public static final String TESTS = "tests";
+
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
+    public static class Tests {
+        public static final String PIPELINE = "pipeline";
+        public static final String GIVEN = "given";
+        public static final String THEN = "then";
+
+        @NoArgsConstructor(access = AccessLevel.PRIVATE)
+        public static class Given {
+            public static final String MESSAGES = "messages";
+            public static final String GENERATOR = "generator";
+            public static final String COUNT = "count";
+        }
+
+        @NoArgsConstructor(access = AccessLevel.PRIVATE)
+        public static class Then {
+            public static final String CODE = "code";
+        }
+
+        @NoArgsConstructor(access = AccessLevel.PRIVATE)
+        public static class Message {
+            public static final String KEY = "key";
+            public static final String VALUE = "value";
+        }
+    }
+
     public static final String PIPELINES = "pipelines";
 
     @NoArgsConstructor(access = AccessLevel.PRIVATE)

@@ -1,0 +1,10 @@
+pipelines:
+  filter_pipeline:
+    from: sensor_source
+    via:
+    - type: filter
+      if: sensor_is_blue
+    - type: peek
+      forEach:
+        code: log.info("MESSAGE ACCEPTED - key={}, value={}", key, value)
+    to: sensor_filtered

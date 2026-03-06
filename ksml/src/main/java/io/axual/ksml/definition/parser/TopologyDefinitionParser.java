@@ -33,10 +33,12 @@ import java.util.List;
 
 import static io.axual.ksml.dsl.KSMLDSL.PIPELINES;
 import static io.axual.ksml.dsl.KSMLDSL.PRODUCERS;
+import static io.axual.ksml.dsl.KSMLDSL.TESTS;
 
 public class TopologyDefinitionParser extends DefinitionParser<TopologyDefinition> {
     private static final String PIPELINE = "pipeline";
     private static final String PRODUCER = "producer";
+    private static final String TEST = "test";
     private final TopologyResourcesParser resourcesParser;
 
     public TopologyDefinitionParser(String namespace) {
@@ -48,10 +50,12 @@ public class TopologyDefinitionParser extends DefinitionParser<TopologyDefinitio
         final var dummyResources = new TopologyResources("dummy");
         final var pipelinesParser = optional(mapField(PIPELINES, PIPELINE, PIPELINE, "Collection of named pipelines", new PipelineDefinitionParser(dummyResources)));
         final var producersParser = optional(mapField(PRODUCERS, PRODUCER, PRODUCER, "Collection of named producers", new ProducerDefinitionParser(dummyResources)));
+        final var testsParser = optional(mapField(TESTS, TEST, TEST, "Collection of named test definitions", new TestDefinitionParser(dummyResources)));
 
         final var fields = resourcesParser.schemas().getFirst().fields();
         fields.addAll(pipelinesParser.schemas().getFirst().fields());
         fields.addAll(producersParser.schemas().getFirst().fields());
+        fields.addAll(testsParser.schemas().getFirst().fields());
         final var schemas = List.of(structSchema(TopologyDefinition.class, "KSML definition", fields));
 
         return new StructsParser<>() {
@@ -71,6 +75,8 @@ public class TopologyDefinitionParser extends DefinitionParser<TopologyDefinitio
                 new MapParser<>(PIPELINE, "pipeline definition", new PipelineDefinitionParser(resources)).parse(node.get(PIPELINES)).forEach(result::register);
                 // Parse all defined producers, using this topology's name as operation prefix
                 new MapParser<>(PRODUCER, "producer definition", new ProducerDefinitionParser(resources)).parse(node.get(PRODUCERS)).forEach(result::register);
+                // Parse all defined tests
+                new MapParser<>(TEST, "test definition", new TestDefinitionParser(resources)).parse(node.get(TESTS)).forEach(result::register);
                 return result;
             }
 

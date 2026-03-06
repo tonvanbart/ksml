@@ -97,6 +97,10 @@
           "type" : "boolean",
           "description" : "Toggle to enable or disable the creation of producers in the KSML definitions. Default value is true"
         },
+        "enableTests" : {
+          "type" : "boolean",
+          "description" : "Toggle to enable or disable running tests defined in the KSML definitions. Default value is false"
+        },
         "errorHandling" : {
           "$ref" : "#/$defs/ErrorHandlingConfig",
           "description" : "Configures how different types of errors are handled"

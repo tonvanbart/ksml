@@ -1,0 +1,11 @@
+pipelines:
+  main:
+    from: test_input
+    via:
+    - type: mapKey
+      mapper:
+        code: 'return key[:4].upper()
+
+          '
+        resultType: string
+    to: test_output

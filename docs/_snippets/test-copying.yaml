@@ -1,0 +1,7 @@
+pipelines:
+  main:
+    from: sensor_source
+    via:
+    - type: peek
+      forEach: print_message
+    to: sensor_copy

@@ -1,0 +1,11 @@
+pipelines:
+  main:
+    from: test_input
+    via:
+    - type: transformKeyValueToValueList
+      mapper:
+        resultType: '[string]'
+        code: 'return [ value+"a", value+"b", value+"c" ]
+
+          '
+    to: test_output

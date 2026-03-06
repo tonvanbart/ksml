@@ -1,0 +1,462 @@
+{
+  "$schema" : "https://json-schema.org/draft/2019-09/schema",
+  "$defs" : {
+    "BranchDefinition" : {
+      "type" : "object",
+      "properties" : {
+        "forEach" : {
+          "description" : "ForEach function for terminal processing of this branch (alternative to 'to')."
+        },
+        "if" : {
+          "description" : "Predicate function reference or inline definition for the branch condition. If not specified, this is the default branch that catches all unmatched records."
+        },
+        "to" : {
+          "description" : "Target stream reference (string) or inline stream definition for this branch's output."
+        }
+      },
+      "description" : "Defines a conditional branch in a pipeline. Records matching the condition are routed to the specified destination.",
+      "additionalProperties" : false
+    },
+    "FunctionDefinition" : {
+      "type" : "object",
+      "properties" : {
+        "code" : {
+          "type" : "string",
+          "description" : "Python code executed for each invocation. Has access to implicit parameters based on function type (e.g., 'key', 'value' for forEach)."
+        },
+        "expression" : {
+          "type" : "string",
+          "description" : "Python expression that returns the result value. Evaluated after 'code' executes."
+        },
+        "globalCode" : {
+          "type" : "string",
+          "description" : "Python code executed once at initialization. Use for imports, global variables, and helper function definitions."
+        },
+        "parameters" : {
+          "description" : "Additional parameters for the function beyond the implicit parameters from the function type.",
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/$defs/FunctionParameterDefinition"
+          }
+        },
+        "resultType" : {
+          "type" : "string",
+          "description" : "The return type of the function. Examples: 'string', 'json', 'boolean', 'tuple(string, json)', 'list(tuple(json, json))'."
+        },
+        "stores" : {
+          "description" : "List of store names this function can access. The stores become available as variables in the Python code.",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "type" : {
+          "type" : "string",
+          "description" : "The type of function. Determines implicit parameters and expected return type.\nTypes: 'forEach', 'predicate', 'valueJoiner', 'generator', 'keyValueTransformer',\n'keyValueToKeyValueListTransformer', 'keyValueToValueListTransformer', 'streamPartitioner',\n'metadataTransformer'. Default is 'general' if not specified.\n"
+        }
+      },
+      "description" : "Defines a reusable function containing Python code for stream processing operations.\nFunctions have a type that determines their implicit parameters and expected return value.\n",
+      "additionalProperties" : false
+    },
+    "FunctionParameterDefinition" : {
+      "type" : "object",
+      "properties" : {
+        "name" : {
+          "type" : "string",
+          "description" : "The name of the parameter as it will be accessible in the Python code."
+        },
+        "type" : {
+          "type" : "string",
+          "description" : "The type of the parameter. Examples: 'string', 'long', 'boolean', 'json'."
+        }
+      },
+      "required" : [ "name", "type" ],
+      "description" : "Defines an additional parameter for a function beyond the implicit parameters from the function type.",
+      "additionalProperties" : false
+    },
+    "InlineFunctionDefinition" : {
+      "type" : "object",
+      "properties" : {
+        "code" : {
+          "type" : "string",
+          "description" : "Python code executed for each invocation."
+        },
+        "expression" : {
+          "type" : "string",
+          "description" : "Python expression that returns the result value."
+        },
+        "globalCode" : {
+          "type" : "string",
+          "description" : "Python code executed once at initialization. Use for imports and global state initialization."
+        },
+        "resultType" : {
+          "type" : "string",
+          "description" : "The return type of the function. Examples: 'string', 'long', 'boolean', 'json'."
+        }
+      },
+      "description" : "Inline function definition used within pipeline steps. Contains Python code without requiring a separate named function.",
+      "additionalProperties" : false
+    },
+    "Map(String,FunctionDefinition)" : {
+      "type" : "object",
+      "additionalProperties" : {
+        "$ref" : "#/$defs/FunctionDefinition"
+      }
+    },
+    "Map(String,PipelineDefinition)" : {
+      "type" : "object",
+      "additionalProperties" : {
+        "$ref" : "#/$defs/PipelineDefinition"
+      }
+    },
+    "Map(String,ProducerDefinition)" : {
+      "type" : "object",
+      "additionalProperties" : {
+        "$ref" : "#/$defs/ProducerDefinition"
+      }
+    },
+    "Map(String,StoreDefinition)" : {
+      "type" : "object",
+      "additionalProperties" : {
+        "$ref" : "#/$defs/StoreDefinition"
+      }
+    },
+    "Map(String,StreamDefinition)" : {
+      "type" : "object",
+      "additionalProperties" : {
+        "$ref" : "#/$defs/StreamDefinition"
+      }
+    },
+    "Map(String,TableDefinition)" : {
+      "type" : "object",
+      "additionalProperties" : {
+        "$ref" : "#/$defs/TableDefinition"
+      }
+    },
+    "OffsetResetPolicy" : {
+      "type" : "string",
+      "enum" : [ "earliest", "latest" ],
+      "description" : "Offset reset policy when no committed offset exists for the consumer group."
+    },
+    "PipelineDefinition" : {
+      "type" : "object",
+      "properties" : {
+        "as" : {
+          "type" : "string",
+          "description" : "Save the pipeline output under this name for linking to other pipelines. Other pipelines can use this name in their 'from' field."
+        },
+        "branch" : {
+          "description" : "Branch definitions for conditional routing to multiple destinations. Mutually exclusive with to, forEach, and toTopicNameExtractor.",
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/$defs/BranchDefinition"
+          }
+        },
+        "forEach" : {
+          "description" : "Terminal forEach operation. Can be a function reference (string) or inline function definition. Mutually exclusive with to, branch, and toTopicNameExtractor."
+        },
+        "from" : {
+          "description" : "The source for this pipeline. Can be a stream/table name reference (string), an inline stream definition, or another pipeline's name."
+        },
+        "to" : {
+          "description" : "Target stream or table reference (string) or inline definition for output. Mutually exclusive with forEach, branch, and toTopicNameExtractor."
+        },
+        "toTopicNameExtractor" : {
+          "$ref" : "#/$defs/TopicNameExtractorDefinition",
+          "description" : "Dynamic topic routing configuration. Uses a function to determine the target topic for each record. Mutually exclusive with to, forEach, and branch."
+        },
+        "via" : {
+          "description" : "List of transformation steps to apply to records. Each step has a type and type-specific configuration.",
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/$defs/PipelineStepDefinition"
+          }
+        }
+      },
+      "required" : [ "from" ],
+      "description" : "Defines a stream processing pipeline.\nA pipeline consumes from a source (stream, table, or another pipeline), applies transformations,\nand writes to a sink (stream, table, forEach, or branches to multiple destinations).\n",
+      "additionalProperties" : false
+    },
+    "PipelineStepDefinition" : {
+      "type" : "object",
+      "properties" : {
+        "adder" : {
+          "description" : "Adder function for reduce operations (adds a new record to the aggregate)."
+        },
+        "advanceBy" : {
+          "type" : "string",
+          "description" : "Advance duration for hopping windows. Format: duration string (e.g., '5s', '1m')."
+        },
+        "aggregator" : {
+          "$ref" : "#/$defs/InlineFunctionDefinition",
+          "description" : "Aggregator function for aggregate operations. Combines the current value with the aggregated value."
+        },
+        "duration" : {
+          "type" : "string",
+          "description" : "Window duration for time-based windows. Format: duration string (e.g., '20s', '5m', '1h')."
+        },
+        "forEach" : {
+          "description" : "ForEach function reference or inline definition for peek/forEach operations. Executes for each record without modifying the stream."
+        },
+        "grace" : {
+          "type" : "string",
+          "description" : "Grace period duration for late-arriving records. Format: duration string (e.g., '1s', '30s')."
+        },
+        "if" : {
+          "description" : "Predicate function reference or inline definition for filter operations. Records matching the predicate pass through."
+        },
+        "initializer" : {
+          "$ref" : "#/$defs/InlineFunctionDefinition",
+          "description" : "Initializer function for aggregate operations. Returns the initial aggregation value."
+        },
+        "mapper" : {
+          "description" : "Mapper function reference or inline definition for transformation operations."
+        },
+        "name" : {
+          "type" : "string",
+          "description" : "Optional name for this step. Useful for debugging and documentation."
+        },
+        "otherStore" : {
+          "type" : "string",
+          "description" : "Store reference for the other side of a stream-stream join."
+        },
+        "reducer" : {
+          "description" : "Reducer function for reduce operations."
+        },
+        "store" : {
+          "description" : "Store reference (string) or inline store definition for aggregate operations."
+        },
+        "stream" : {
+          "type" : "string",
+          "description" : "Stream reference for stream-stream join operations."
+        },
+        "subtractor" : {
+          "description" : "Subtractor function for reduce operations (removes a record from the aggregate)."
+        },
+        "table" : {
+          "type" : "string",
+          "description" : "Table reference for stream-table join operations."
+        },
+        "thisStore" : {
+          "type" : "string",
+          "description" : "Store reference for this side of a stream-stream join."
+        },
+        "timeDifference" : {
+          "type" : "string",
+          "description" : "Time difference window for stream-stream joins. Format: duration string (e.g., '1s', '5m')."
+        },
+        "type" : {
+          "type" : "string",
+          "description" : "The type of operation. Values: 'filter', 'filterNot', 'map', 'mapKey', 'mapValue', 'mapValues',\n'peek', 'groupBy', 'groupByKey', 'aggregate', 'reduce', 'count', 'join', 'leftJoin', 'outerJoin',\n'windowByTime', 'toStream', 'toTable', 'transformKey', 'transformValue', 'transformKeyValue',\n'transformMetadata', 'transformKeyValueToKeyValueList', 'transformKeyValueToValueList',\n'flatMap', 'flatMapValues', 'selectKey', 'repartition', 'merge', 'suppress'.\n"
+        },
+        "valueJoiner" : {
+          "description" : "Value joiner function reference or inline definition for join operations."
+        },
+        "windowType" : {
+          "$ref" : "#/$defs/WindowType",
+          "description" : "Window type for windowByTime operations. Values: 'tumbling', 'hopping', 'sliding', 'session'."
+        }
+      },
+      "required" : [ "type" ],
+      "description" : "Defines a single transformation step in a pipeline.\nThe 'type' property determines which other properties are applicable.\n",
+      "additionalProperties" : false
+    },
+    "ProducerDefinition" : {
+      "type" : "object",
+      "properties" : {
+        "generator" : {
+          "type" : "string",
+          "description" : "Reference to the generator function that produces records. The function should return a list of key-value tuples."
+        },
+        "interval" : {
+          "type" : "string",
+          "description" : "Interval between message generations. Format: duration string (e.g., '3s', '1m', '500ms')."
+        },
+        "to" : {
+          "description" : "Target stream definition. Can be a stream name reference (string) or an inline stream definition with topic, keyType, and valueType."
+        }
+      },
+      "required" : [ "generator", "interval", "to" ],
+      "description" : "Defines a data producer that generates records at regular intervals using a generator function.",
+      "additionalProperties" : false
+    },
+    "StoreDefinition" : {
+      "type" : "object",
+      "properties" : {
+        "caching" : {
+          "type" : "boolean",
+          "description" : "Whether caching is enabled for the store. Caching can improve performance but may delay downstream updates."
+        },
+        "historyRetention" : {
+          "type" : "string",
+          "description" : "History retention duration for versioned stores. Format: duration string (e.g., '1h', '30m', '7d')."
+        },
+        "keyType" : {
+          "type" : "string",
+          "description" : "The type of the store key. Examples: 'string', 'long', 'json'."
+        },
+        "logging" : {
+          "type" : "boolean",
+          "description" : "Whether changelog logging is enabled. When true, changes are written to a changelog topic for fault tolerance."
+        },
+        "persistent" : {
+          "type" : "boolean",
+          "description" : "Whether the store is persistent (survives application restarts). Default depends on store type."
+        },
+        "retainDuplicates" : {
+          "type" : "boolean",
+          "description" : "Whether to retain duplicate keys within a window. When true, all records are kept; when false, only the latest per key."
+        },
+        "retention" : {
+          "type" : "string",
+          "description" : "Retention duration for window stores. Old windows are removed after this period. Format: duration string (e.g., '1h', '3s')."
+        },
+        "timestamped" : {
+          "type" : "boolean",
+          "description" : "Whether the window store records timestamps. Required for some join operations."
+        },
+        "type" : {
+          "$ref" : "#/$defs/StoreType",
+          "description" : "The type of store: 'keyValue' for simple key-value storage, 'window' for windowed state."
+        },
+        "valueType" : {
+          "type" : "string",
+          "description" : "The type of the store value. Examples: 'string', 'long', 'json'."
+        },
+        "windowSize" : {
+          "type" : "string",
+          "description" : "Window size duration for window stores. Format: duration string (e.g., '10m', '1h', '2s')."
+        }
+      },
+      "required" : [ "keyType", "type", "valueType" ],
+      "description" : "State store definition for storing local state during stream processing. Supports key-value and windowed stores.",
+      "additionalProperties" : false
+    },
+    "StoreType" : {
+      "type" : "string",
+      "enum" : [ "keyValue", "window" ],
+      "description" : "Type of state store for storing local state during stream processing."
+    },
+    "StreamDefinition" : {
+      "type" : "object",
+      "properties" : {
+        "keyType" : {
+          "type" : "string",
+          "description" : "The type of the message key. Examples: 'string', 'long', 'json', 'avro:SchemaName', 'protobuf:MessageName'."
+        },
+        "offsetResetPolicy" : {
+          "$ref" : "#/$defs/OffsetResetPolicy",
+          "description" : "The offset reset policy when no committed offset exists. Values: 'earliest' or 'latest'."
+        },
+        "partitioner" : {
+          "type" : "string",
+          "description" : "Reference to a custom stream partitioner function for controlling partition assignment when producing."
+        },
+        "timestampExtractor" : {
+          "$ref" : "#/$defs/TimestampExtractorDefinition",
+          "description" : "Custom timestamp extractor for extracting event time from records."
+        },
+        "topic" : {
+          "type" : "string",
+          "description" : "The Kafka topic name for this stream."
+        },
+        "valueType" : {
+          "type" : "string",
+          "description" : "The type of the message value. Examples: 'string', 'json', 'avro:SchemaName', 'protobuf:MessageName', 'csv:SchemaName', 'xml:SchemaName'."
+        }
+      },
+      "required" : [ "keyType", "topic", "valueType" ],
+      "description" : "Defines a Kafka stream source or sink with topic, key/value types, and optional configuration.",
+      "additionalProperties" : false
+    },
+    "TableDefinition" : {
+      "type" : "object",
+      "properties" : {
+        "keyType" : {
+          "type" : "string",
+          "description" : "The type of the message key. Examples: 'string', 'long', 'json', 'avro:SchemaName'."
+        },
+        "topic" : {
+          "type" : "string",
+          "description" : "The Kafka topic name for this table. Should be a compacted topic."
+        },
+        "valueType" : {
+          "type" : "string",
+          "description" : "The type of the message value. Examples: 'string', 'json', 'avro:SchemaName'."
+        }
+      },
+      "required" : [ "keyType", "topic", "valueType" ],
+      "description" : "Defines a Kafka table backed by a compacted topic. Tables provide key-value lookup semantics where each key has exactly one current value.",
+      "additionalProperties" : false
+    },
+    "TimestampExtractorDefinition" : {
+      "type" : "object",
+      "properties" : {
+        "code" : {
+          "type" : "string",
+          "description" : "Python code executed for each record to extract the timestamp. Has access to 'record' and 'previousTimestamp' variables."
+        },
+        "expression" : {
+          "type" : "string",
+          "description" : "Python expression that returns the timestamp value (as a long/integer representing milliseconds since epoch)."
+        },
+        "globalCode" : {
+          "type" : "string",
+          "description" : "Python code executed once at initialization. Use for imports and global state initialization."
+        }
+      },
+      "required" : [ "expression" ],
+      "description" : "Custom timestamp extractor for extracting event time from records. Allows Python code to determine the timestamp for each record.",
+      "additionalProperties" : false
+    },
+    "TopicNameExtractorDefinition" : {
+      "type" : "object",
+      "properties" : {
+        "topicNameExtractor" : {
+          "description" : "Topic name extractor function reference or inline definition. The function receives each record and returns the target topic name as a string."
+        }
+      },
+      "required" : [ "topicNameExtractor" ],
+      "description" : "Configuration for dynamic topic routing. The topic name extractor function determines the target topic for each record.",
+      "additionalProperties" : false
+    },
+    "WindowType" : {
+      "type" : "string",
+      "enum" : [ "tumbling", "hopping", "sliding", "session" ],
+      "description" : "Type of time window for windowed stream processing operations."
+    }
+  },
+  "type" : "object",
+  "properties" : {
+    "$schema" : {
+      "type" : "string",
+      "description" : "JSON Schema reference for validation (e.g., 'https://axual.github.io/ksml/latest/ksml-language-spec.json')"
+    },
+    "functions" : {
+      "$ref" : "#/$defs/Map(String,FunctionDefinition)",
+      "description" : "Named function definitions. Functions contain reusable Python code for stream processing operations."
+    },
+    "pipelines" : {
+      "$ref" : "#/$defs/Map(String,PipelineDefinition)",
+      "description" : "Named pipeline definitions. Pipelines define the stream processing topology with sources, transformations, and sinks."
+    },
+    "producers" : {
+      "$ref" : "#/$defs/Map(String,ProducerDefinition)",
+      "description" : "Named producer definitions for data generation. Producers generate records at regular intervals using generator functions."
+    },
+    "stores" : {
+      "$ref" : "#/$defs/Map(String,StoreDefinition)",
+      "description" : "Named state store definitions. Stores provide local state for stream processing operations."
+    },
+    "streams" : {
+      "$ref" : "#/$defs/Map(String,StreamDefinition)",
+      "description" : "Named stream definitions. Each stream defines a Kafka topic with its key and value types."
+    },
+    "tables" : {
+      "$ref" : "#/$defs/Map(String,TableDefinition)",
+      "description" : "Named table definitions for compacted topics. Tables provide key-value lookup semantics."
+    }
+  },
+  "description" : "Root element for a KSML definition file.\nA KSML definition describes Kafka Streams topologies using YAML and Python.\nIt contains sections for streams, tables, stores, functions, pipelines, and producers.\n",
+  "additionalProperties" : false
+}

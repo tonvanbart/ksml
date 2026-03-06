@@ -1,0 +1,19 @@
+pipelines:
+  main:
+    from: input_stream
+    via:
+    - type: groupByKey
+    - type: aggregate
+      store:
+        name: aggregate_store
+        type: keyValue
+        keyType: string
+        valueType: long
+      initializer:
+        expression: 0
+        resultType: long
+      aggregator:
+        expression: aggregatedValue + value
+        resultType: long
+    - type: toStream
+    to: output_stream

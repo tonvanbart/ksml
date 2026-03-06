@@ -1,0 +1,9 @@
+pipelines:
+  main:
+    from: test_input
+    via:
+    - type: selectKey
+      mapper:
+        expression: key[:4].upper()
+        resultType: string
+    to: test_output

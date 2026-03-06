@@ -1,0 +1,9 @@
+pipelines:
+  main:
+    from: test_input
+    via:
+    - type: transformKey
+      mapper:
+        expression: key[:4].upper()
+        resultType: string
+    to: test_output

@@ -1,0 +1,82 @@
+{
+  "$schema" : "https://json-schema.org/draft/2020-12/schema",
+  "$defs" : {
+    "Map(String,Object)" : {
+      "type" : "object"
+    }
+  },
+  "type" : "object",
+  "properties" : {
+    "kafka" : {
+      "type" : "object"
+    },
+    "ksml" : {
+      "type" : "object",
+      "properties" : {
+        "applicationServer" : {
+          "type" : "object",
+          "properties" : {
+            "host" : {
+              "type" : "string"
+            },
+            "port" : {
+              "type" : "string"
+            }
+          }
+        },
+        "definitions" : {
+          "$ref" : "#/$defs/Map(String,Object)"
+        },
+        "errorHandling" : {
+          "type" : "object"
+        },
+        "notations" : {
+          "type" : "object"
+        },
+        "prometheus" : {
+          "type" : "object",
+          "properties" : {
+            "configFile" : {
+              "type" : "object"
+            },
+            "host" : {
+              "type" : "string"
+            },
+            "port" : {
+              "type" : "string"
+            }
+          }
+        },
+        "pythonContext" : {
+          "type" : "object",
+          "properties" : {
+            "allowCreateProcess" : {
+              "type" : "boolean"
+            },
+            "allowCreateThread" : {
+              "type" : "boolean"
+            },
+            "allowHostFileAccess" : {
+              "type" : "boolean"
+            },
+            "allowHostSocketAccess" : {
+              "type" : "boolean"
+            },
+            "allowNativeAccess" : {
+              "type" : "boolean"
+            },
+            "inheritEnvironmentVariables" : {
+              "type" : "boolean"
+            }
+          }
+        },
+        "schemaRegistries" : {
+          "type" : "object"
+        },
+        "schemas" : {
+          "$ref" : "#/$defs/Map(String,Object)"
+        }
+      }
+    }
+  }
+}

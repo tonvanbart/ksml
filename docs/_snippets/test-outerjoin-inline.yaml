@@ -1,0 +1,16 @@
+pipelines:
+  main:
+    from: test_input1
+    via:
+    - type: outerJoin
+      stream: test_input2
+      valueJoiner:
+        resultType: string
+        code: "if value1 == None:\n  joined = \"?,\" + value2\nelif value2 == None:\n\
+          \  joined = value1 + \",?\"\nelse:\n  joined =  value1 + \",\" + value2\n"
+        expression: joined
+      timeDifference: 1s
+      grace: 1s
+      thisStore: left_store
+      otherStore: right_store
+    to: test_output

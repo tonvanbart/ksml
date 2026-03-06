@@ -1,0 +1,4 @@
+pipelines:
+  process_message:
+    from: sensor_source_avro
+    forEach: process_message

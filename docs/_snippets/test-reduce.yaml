@@ -1,0 +1,14 @@
+pipelines:
+  main:
+    from: messageIn
+    via:
+    - type: peek
+      forEach: print_message
+    - type: groupByKey
+    - type: reduce
+      reducer:
+        expression: value1 + value2
+    - type: toStream
+    - type: peek
+      forEach: print_message
+    to: messagesOut

@@ -52,6 +52,7 @@ import io.axual.ksml.rest.server.KsmlQuerier;
 import io.axual.ksml.rest.server.RestServer;
 import io.axual.ksml.runner.backend.KafkaProducerRunner;
 import io.axual.ksml.runner.backend.KafkaStreamsRunner;
+import io.axual.ksml.runner.backend.KafkaTestRunner;
 import io.axual.ksml.runner.backend.Runner;
 import io.axual.ksml.runner.config.ErrorHandlingConfig;
 import io.axual.ksml.runner.config.KSMLRunnerConfig;
@@ -264,11 +265,13 @@ public class KSMLRunner {
 
             final Map<String, TopologyDefinition> producerDefinitions = new HashMap<>();
             final Map<String, TopologyDefinition> pipelineDefinitions = new HashMap<>();
+            final Map<String, TopologyDefinition> testDefinitions = new HashMap<>();
             definitions.forEach((name, definition) -> {
                 final var parser = new TopologyDefinitionParser(name);
                 final var topologyDefinition = parser.parse(ParseNode.fromRoot(definition, name));
                 if (!topologyDefinition.producers().isEmpty()) producerDefinitions.put(name, topologyDefinition);
                 if (!topologyDefinition.pipelines().isEmpty()) pipelineDefinitions.put(name, topologyDefinition);
+                if (!topologyDefinition.tests().isEmpty()) testDefinitions.put(name, topologyDefinition);
             });
 
             if (!ksmlConfig.enableProducers() && !producerDefinitions.isEmpty()) {
@@ -278,6 +281,21 @@ public class KSMLRunner {
             if (!ksmlConfig.enablePipelines() && !pipelineDefinitions.isEmpty()) {
                 log.warn("Pipelines are disabled for this runner. The supplied pipeline specifications will be ignored.");
                 pipelineDefinitions.clear();
+            }
+            if (!ksmlConfig.enableTests() && !testDefinitions.isEmpty()) {
+                log.warn("Tests are disabled for this runner. The supplied test specifications will be ignored.");
+                testDefinitions.clear();
+            }
+
+            // Run tests before starting producers and streams (pre-flight check)
+            if (!testDefinitions.isEmpty()) {
+                log.info("Running KSML tests as pre-flight check");
+                final var testRunner = new KafkaTestRunner(KafkaTestRunner.Config.builder()
+                        .definitions(testDefinitions)
+                        .pythonContextConfig(ksmlConfig.pythonContextConfig())
+                        .build());
+                testRunner.run();
+                log.info("All KSML tests passed");
             }
 
             final var producer = producerDefinitions.isEmpty() ? null : new KafkaProducerRunner(

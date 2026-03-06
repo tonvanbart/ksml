@@ -90,6 +90,11 @@
             <groupId>io.axual.utils</groupId>
             <artifactId>axual-header-cleaning</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka-streams-test-utils</artifactId>
+            <scope>compile</scope>
+        </dependency>
 
         <!-- TEST dependencies -->
         <dependency>

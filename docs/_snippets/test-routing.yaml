@@ -1,0 +1,11 @@
+pipelines:
+  main:
+    from: sensor_stream
+    via:
+    - name: before_peek
+      type: peek
+      forEach: print_message
+    toTopicNameExtractor:
+      topicNameExtractor:
+        code: "if key == 'sensor1':\n  return 'ksml_sensordata_sensor1'\nelif key\
+          \ == 'sensor2':\n  return 'ksml_sensordata_sensor2'\nelse:\n  return 'ksml_sensordata_sensor0'\n"

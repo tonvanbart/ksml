@@ -1,0 +1,9 @@
+pipelines:
+  main:
+    from: test_input
+    via:
+    - type: transformKeyValueToValueList
+      mapper:
+        resultType: '[string]'
+        expression: '[ value+''-1'',value+''-2'',value+''-3'' ]'
+    to: test_output

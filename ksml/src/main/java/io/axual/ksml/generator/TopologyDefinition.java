@@ -23,6 +23,7 @@ package io.axual.ksml.generator;
 import com.google.common.collect.ImmutableMap;
 import io.axual.ksml.definition.PipelineDefinition;
 import io.axual.ksml.definition.ProducerDefinition;
+import io.axual.ksml.definition.TestDefinition;
 import io.axual.ksml.exception.TopologyException;
 import lombok.Getter;
 
@@ -41,6 +42,8 @@ public class TopologyDefinition extends TopologyResources {
     private final Map<String, PipelineDefinition> pipelines = new LinkedHashMap<>();
     // All registered producers in order of insertion
     private final Map<String, ProducerDefinition> producers = new LinkedHashMap<>();
+    // All registered tests in order of insertion
+    private final Map<String, TestDefinition> tests = new LinkedHashMap<>();
 
     public void register(String name, PipelineDefinition pipelineDefinition) {
         if (pipelines.containsKey(name)) {
@@ -77,5 +80,16 @@ public class TopologyDefinition extends TopologyResources {
 
     public Map<String, ProducerDefinition> producers() {
         return ImmutableMap.copyOf(producers);
+    }
+
+    public void register(String name, TestDefinition testDefinition) {
+        if (tests.containsKey(name)) {
+            throw new TopologyException("Test definition must be unique: " + name);
+        }
+        tests.put(name, testDefinition);
+    }
+
+    public Map<String, TestDefinition> tests() {
+        return ImmutableMap.copyOf(tests);
     }
 }

@@ -97,6 +97,10 @@ public class KSMLConfig {
     @JsonPropertyDescription("Toggle to enable or disable the creation of pipelines in the KSML definitions. Default value is true")
     private boolean enablePipelines = true;
 
+    @JsonProperty(value = "enableTests", required = false)
+    @JsonPropertyDescription("Toggle to enable or disable running tests defined in the KSML definitions. Default value is false")
+    private boolean enableTests = false;
+
     @JsonProperty(value = "errorHandling", required = false)
     @JsonPropertyDescription("Configures how different types of errors are handled")
     private ErrorHandlingConfig errorHandlingConfig = new ErrorHandlingConfig();

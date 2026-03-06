@@ -1,0 +1,37 @@
+pipelines:
+  prepare:
+    from: sensor_source
+    via:
+    - name: filter_nulls
+      type: filter
+      if:
+        expression: value != None
+    - name: rekey_sensordata
+      type: transformKeyValue
+      mapper:
+        resultType: (string,avro:SensorData)
+        expression: (value["city"],value)
+    to: sensor_transformed
+  join:
+    from: sensor_transformed
+    via:
+    - name: alert_joining
+      type: join
+      table: sensor_alert_settings
+      valueJoiner: alert_join
+    - name: log_join_result
+      type: peek
+      forEach:
+        code: log.debug("JOIN RESULT - key={}, value={}", key, value)
+    - name: expand_alerts
+      type: transformKeyValueToKeyValueList
+      mapper: alert_split
+    - name: log_alert
+      type: peek
+      forEach:
+        code: log.info("ALERT - key={}, value={}", key, value)
+    to: sensor_alerts
+  verify:
+    from: sensor_alerts
+    forEach:
+      code: log.debug("OUTPUT - key={}, value={}", key, value)
