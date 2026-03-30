@@ -98,23 +98,23 @@ public class KSMLTestRunner {
     public TestResult runSingleTest(Path testFile) {
         var parser = new TestDefinitionParser();
         var executionContext = new TestExecutionContext();
-        TestDefinition definition;
+        TestDefinition testDefinition;
         TopologyTestDriver driver = null;
 
         try {
             // 1. Parse test definition
-            definition = parser.parse(testFile);
-            log.info("Running test: {}", definition.name());
+            testDefinition = parser.parse(testFile);
+            log.info("Running test: {}", testDefinition.name());
 
             // 2. Set up execution context
-            executionContext.setup(resolveSchemaDirectory(testFile, definition.schemaDirectory()));
+            executionContext.setup(resolveSchemaDirectory(testFile, testDefinition.schemaDirectory()));
 
             // 3. Parse pipeline definition and build topology
-            var topologyName = sanitizeTopologyName(definition.name());
-            var yamlContent = readPipelineContent(testFile, definition.pipeline());
-            var pipelineJson = YAMLObjectMapper.INSTANCE.readValue(yamlContent, JsonNode.class);
+            var topologyName = sanitizeTopologyName(testDefinition.name());
+            var yamlContent = readPipelineContent(testFile, testDefinition.pipeline());
+            var pipelineYaml = YAMLObjectMapper.INSTANCE.readValue(yamlContent, JsonNode.class);
             var topologyDefinition = new TopologyDefinitionParser(topologyName)
-                    .parse(ParseNode.fromRoot(pipelineJson, topologyName));
+                    .parse(ParseNode.fromRoot(pipelineYaml, topologyName));
 
             var topologyGenerator = new TopologyGenerator(
                     topologyName + ".test",
@@ -132,11 +132,11 @@ public class KSMLTestRunner {
 
             // 5. Produce test data
             var producer = new TestDataProducer(driver);
-            producer.produce(definition.produce());
+            producer.produce(testDefinition.produce());
 
             // 6. Run assertions
             var assertionRunner = new AssertionRunner(driver);
-            return assertionRunner.runAssertions(definition.assertions(), definition.name());
+            return assertionRunner.runAssertions(testDefinition.assertions(), testDefinition.name());
 
         } catch (TestDefinitionException e) {
             return TestResult.error(testFile.getFileName().toString(), "Invalid test definition: " + e.getMessage());

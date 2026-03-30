@@ -26,11 +26,15 @@ import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.TopologyTestDriver;
 import org.apache.kafka.streams.kstream.Consumed;
 import org.apache.kafka.streams.kstream.Produced;
+import org.graalvm.home.Version;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIf;
 
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -208,5 +212,123 @@ class TestDataProducerTest {
 
         assertThrows(TestDefinitionException.class,
                 () -> producer.produce(List.of(block)));
+    }
+
+    /**
+     * Generator-based production tests. These require GraalVM because they execute Python code.
+     */
+    @Nested
+    @EnabledIf(value = "isRunningOnGraalVM", disabledReason = "These tests require GraalVM")
+    class GeneratorTests {
+
+        static boolean isRunningOnGraalVM() {
+            return Version.getCurrent().isRelease();
+        }
+
+        @Test
+        void generatorProducesSingleMessage() {
+            var producer = new TestDataProducer(driver);
+            var generator = Map.<String, Object>of(
+                    "name", "single_msg_gen",
+                    "code", "result = [(\"gk1\", \"gv1\")]",
+                    "expression", "result"
+            );
+            var block = new ProduceBlock(INPUT_TOPIC, "string", "string",
+                    null, generator, 1L);
+
+            producer.produce(List.of(block));
+
+            var records = outputTopic().readRecordsToList();
+            assertEquals(1, records.size());
+            assertEquals("gk1", records.getFirst().key());
+            assertEquals("gv1", records.getFirst().value());
+        }
+
+        @Test
+        void generatorProducesMultipleMessages() {
+            var producer = new TestDataProducer(driver);
+            var generator = Map.<String, Object>of(
+                    "name", "list_gen",
+                    "code", "result = [(\"k1\", \"v1\"), (\"k2\", \"v2\"), (\"k3\", \"v3\")]",
+                    "expression", "result"
+            );
+            var block = new ProduceBlock(INPUT_TOPIC, "string", "string",
+                    null, generator, 1L);
+
+            producer.produce(List.of(block));
+
+            var records = outputTopic().readRecordsToList();
+            assertEquals(3, records.size());
+            assertEquals("k1", records.get(0).key());
+            assertEquals("v1", records.get(0).value());
+            assertEquals("k2", records.get(1).key());
+            assertEquals("v2", records.get(1).value());
+            assertEquals("k3", records.get(2).key());
+            assertEquals("v3", records.get(2).value());
+        }
+
+        @Test
+        void generatorInvokedMultipleTimes() {
+            var producer = new TestDataProducer(driver);
+            var generator = Map.<String, Object>of(
+                    "name", "counter_gen",
+                    "code", "",
+                    "expression", "[(\"key\", \"value\")]"
+            );
+            // Invoke the generator 3 times, each producing 1 message
+            var block = new ProduceBlock(INPUT_TOPIC, "string", "string",
+                    null, generator, 3L);
+
+            producer.produce(List.of(block));
+
+            var records = outputTopic().readRecordsToList();
+            assertEquals(3, records.size());
+            for (var record : records) {
+                assertEquals("key", record.key());
+                assertEquals("value", record.value());
+            }
+        }
+
+        @Test
+        void generatorWithGlobalCode() {
+            var producer = new TestDataProducer(driver);
+            var generator = Map.<String, Object>of(
+                    "name", "globalcode_gen",
+                    "globalCode", "PREFIX = \"sensor-\"",
+                    "code", "result = [(PREFIX + str(i), \"reading-\" + str(i)) for i in range(3)]",
+                    "expression", "result"
+            );
+            var block = new ProduceBlock(INPUT_TOPIC, "string", "string",
+                    null, generator, 1L);
+
+            producer.produce(List.of(block));
+
+            var records = outputTopic().readRecordsToList();
+            assertEquals(3, records.size());
+            assertEquals("sensor-0", records.get(0).key());
+            assertEquals("reading-0", records.get(0).value());
+            assertEquals("sensor-2", records.get(2).key());
+            assertEquals("reading-2", records.get(2).value());
+        }
+
+        @Test
+        void generatorDefaultsCountToOne() {
+            var producer = new TestDataProducer(driver);
+            var generator = Map.<String, Object>of(
+                    "name", "default_count_gen",
+                    "code", "",
+                    "expression", "[(\"dk\", \"dv\")]"
+            );
+            // count is null — should default to 1 invocation
+            var block = new ProduceBlock(INPUT_TOPIC, "string", "string",
+                    null, generator, null);
+
+            producer.produce(List.of(block));
+
+            var records = outputTopic().readRecordsToList();
+            assertEquals(1, records.size());
+            assertEquals("dk", records.getFirst().key());
+            assertEquals("dv", records.getFirst().value());
+        }
     }
 }

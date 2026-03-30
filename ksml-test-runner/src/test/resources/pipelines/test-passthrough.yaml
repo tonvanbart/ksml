@@ -1,0 +1,16 @@
+# Simple pass-through pipeline used for generator-based test data production.
+
+streams:
+  input_stream:
+    topic: input_topic
+    keyType: string
+    valueType: string
+  output_stream:
+    topic: output_topic
+    keyType: string
+    valueType: string
+
+pipelines:
+  passthrough:
+    from: input_stream
+    to: output_stream

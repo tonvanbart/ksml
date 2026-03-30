@@ -24,7 +24,7 @@
 - [x] 4.2 Implement key/value conversion from YAML maps to typed DataObjects using existing `NativeDataObjectMapper` / notation infrastructure
 - [x] 4.3 Implement optional timestamp support: use `pipeInput(key, value, Instant)` when timestamp is present, `pipeInput(key, value)` when absent
 - [x] 4.4 Support multiple produce blocks targeting different input topics
-- [ ] 4.5 Add generator-based production: invoke Python generator function via `PythonContext`, pipe results into TestInputTopic
+- [x] 4.5 Add generator-based production: invoke Python generator function via `PythonContext`, pipe results into TestInputTopic
 
 ## 5. Assertion Execution
 

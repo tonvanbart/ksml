@@ -1,0 +1,34 @@
+# Sample test definition demonstrating generator-based test data production.
+# Instead of listing inline messages, a Python generator function produces the data.
+
+test:
+  name: "Generator produces messages through pipeline"
+  pipeline: pipelines/test-passthrough.yaml
+
+  produce:
+    - topic: input_topic
+      keyType: string
+      valueType: string
+      generator:
+        name: generate_sensor_keys
+        globalCode: |
+          CITIES = ["Amsterdam", "Utrecht", "Rotterdam"]
+        code: |
+          result = []
+          for i in range(len(CITIES)):
+            key = "sensor-" + str(i)
+            value = CITIES[i]
+            result.append((key, value))
+        expression: result
+      count: 1
+
+  assert:
+    - topic: output_topic
+      code: |
+        assert len(records) == 3, f"Expected 3 records, got {len(records)}"
+        assert records[0]["key"] == "sensor-0"
+        assert records[0]["value"] == "Amsterdam"
+        assert records[1]["key"] == "sensor-1"
+        assert records[1]["value"] == "Utrecht"
+        assert records[2]["key"] == "sensor-2"
+        assert records[2]["value"] == "Rotterdam"
