@@ -614,6 +614,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#logging" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Logging
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2151,6 +2162,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#logging" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Logging
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2404,6 +2426,16 @@ When <code>stores</code> is set, each store is available as a Python variable wi
 </code></pre></div>
 <h2 id="schema-validation-for-test-files">Schema Validation for Test Files</h2>
 <p>A JSON Schema is available for test definition files at <code>docs/ksml-test-spec.json</code>. See the <a href="../schema-validation/">Schema Validation</a> page for instructions on setting up editor auto-completion and validation.</p>
+<h2 id="logging">Logging</h2>
+<p>The test runner ships with a default Logback configuration that keeps output quiet: <code>WARN</code> for everything, <code>INFO</code> for the test runner itself so you still see the <code>Running test: ...</code> progress lines and the final results table.</p>
+<p>To get verbose output for one run, point Logback at a custom logback configuration file at invocation time:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="w">  </span>-v<span class="w"> </span>./my-tests:/tests<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="w">  </span>--entrypoint<span class="w"> </span>java<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="w">  </span>axual/ksml:latest<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="w">  </span>-Dlogback.configurationFile<span class="o">=</span>/tests/logback-debug.xml<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="w">  </span>-jar<span class="w"> </span>/opt/ksml/ksml-test.jar<span class="w"> </span>/tests/my-test.yaml
+</code></pre></div>
 
 
 
