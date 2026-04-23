@@ -2575,7 +2575,7 @@ When <code>stores</code> is set, each store is available as a Python variable wi
 <a id="__codelineno-5-31" name="__codelineno-5-31" href="#__codelineno-5-31"></a><span class="w">      </span><span class="nt">valueType</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">confluent_avro</span>
 </code></pre></div>
 </details>
-<p>This is the same filter logic, but the stream types use <code>confluent_avro</code> — the schema will be inferred from the registry at runtime.</p>
+<p>This is the same filter logic, but the output topic uses <code>confluent_avro</code> — the schema will be inferred from the registry at runtime.</p>
 <h3 id="the-test_1">The Test</h3>
 <details class="info">
 <summary>Test definition: <code>sample-filter-test-confluent-avro.yaml</code> (click to expand)</summary>
@@ -2629,7 +2629,9 @@ When <code>stores</code> is set, each store is available as a Python variable wi
 <a id="__codelineno-6-48" name="__codelineno-6-48" href="#__codelineno-6-48"></a><span class="w">        </span><span class="no">assert records[1][&quot;key&quot;] == &quot;sensor-3&quot;, f&quot;Expected key &#39;sensor-3&#39;, got {records[1][&#39;key&#39;]}&quot;</span>
 </code></pre></div>
 </details>
-<p>The <code>registry</code> block maps both the input and output topics to <code>avro:SensorData</code>. The test runner loads <code>SensorData.avsc</code> from the <code>schemas</code> directory and registers it in the mock registry. The pipeline then resolves its <code>confluent_avro</code> types from the mock registry, and the assertion can properly deserialize the Avro output records.</p>
+<p>In this example, the <code>registry</code> block maps both the input and output topics to <code>avro:SensorData</code>. The test runner loads <code>SensorData.avsc</code> from the <code>schemas</code> directory and registers it in the mock registry. The pipeline then resolves its <code>confluent_avro</code> types from the mock registry, and the assertion can properly deserialize the Avro output records.
+Note that in this example both the <code>registry</code> block and the <code>produce</code> block specify <code>"avro:SensorData"</code> as the valueType; either by itself is fine, in cases where both 
+are present like here, the valueType from the produce block would win in case of a difference.</p>
 <h2 id="running-tests-with-docker">Running Tests with Docker</h2>
 <p>The KSML Docker image includes the test runner at <code>/opt/ksml/ksml-test.jar</code>. Mount your test files and override the entrypoint:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span><span class="se">\</span>
