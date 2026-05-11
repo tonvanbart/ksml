@@ -2391,7 +2391,7 @@
 <p>Since the test runner is using Kafka's topology test driver, there is no infrastructure needed: no Kafka broker, no Schema Registry. Tests can be run on any machine.</p>
 <p>A test definition file is a <em>suite</em> — it describes one pipeline plus one or more named tests that share the suite's configuration. Each test runs against a fresh <code>TopologyTestDriver</code>, so tests in the same suite are hermetic and do not share state.</p>
 <h2 id="test-definition-format">Test Definition Format</h2>
-<p>A test definition is a flat YAML document — no outer wrapper element — describing one pipeline, the streams it touches, and one or more named tests:</p>
+<p>A test definition is a flat YAML document referencing one KSML definition, the streams it touches, and one or more named tests:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Filtering</span><span class="nv"> </span><span class="s">pipeline</span><span class="nv"> </span><span class="s">tests&quot;</span><span class="w">          </span><span class="c1"># optional; falls back to filename without extension</span>
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="nt">definition</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">path/to/pipeline.yaml</span><span class="w">         </span><span class="c1"># path to the KSML pipeline definition YAML</span>
 <a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="nt">schemaDirectory</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">path/to/schemas</span><span class="w">          </span><span class="c1"># optional, for schemas</span>
@@ -2830,7 +2830,7 @@
 <a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>
 <a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>  PASS  Filtering &amp; transforming pipeline › Valid sensor data is filtered through and transformed
 <a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>  FAIL  Filtering &amp; transforming pipeline › Out-of-range temperature is filtered out
-<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>        AssertionError: Intentional failure: expected records on filtered_data, got 0
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>        AssertionError: Expected no records on filtered_data, got 1
 <a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>  PASS  Filtering &amp; transforming pipeline › Sensor data without temperature is filtered out
 <a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a>  PASS  Filtering &amp; transforming pipeline › Sensor data without humidity is filtered out
 <a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>  PASS  Filtering &amp; transforming pipeline › Malformed sensor data is routed to alerts_stream when transformation fails
