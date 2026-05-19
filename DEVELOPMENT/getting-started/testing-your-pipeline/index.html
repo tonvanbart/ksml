@@ -2499,10 +2499,14 @@
 </table>
 <p>Type strings follow KSML's standard type grammar — the same one <code>StreamDefinitionParser</code> uses in pipeline yamls:</p>
 <ul>
-<li><strong>Schema-less notations</strong> (<code>string</code>, <code>long</code>, <code>int</code>, <code>boolean</code>, <code>bytes</code>, <code>json</code>, <code>binary</code>, <code>xml</code>, etc.) may appear unqualified.</li>
-<li><strong>Schema-bearing notations</strong> (<code>avro</code>, <code>confluent_avro</code>, <code>apicurio_avro</code>, <code>protobuf</code>, <code>json_schema</code>, <code>csv</code>) <strong>must</strong> be qualified with a schema name (e.g., <code>avro:SensorData</code>). The named schema is loaded from <code>schemaDirectory</code> and registered in an in-memory mock registry under <code>&lt;topic&gt;-key</code> / <code>&lt;topic&gt;-value</code>. </li>
+<li><strong>Schema-less notations</strong> (<code>string</code>, <code>long</code>, <code>int</code>, <code>boolean</code>, <code>bytes</code>, <code>json</code>, <code>binary</code>) may appear unqualified.</li>
+<li><strong>Schema-bearing notations</strong> (<code>avro</code>, <code>confluent_avro</code>, <code>apicurio_avro</code>) <strong>must</strong> be qualified with a schema name (e.g., <code>avro:SensorData</code>). The named schema is loaded from <code>schemaDirectory</code> and registered in an in-memory mock registry under <code>&lt;topic&gt;-key</code> / <code>&lt;topic&gt;-value</code>.</li>
 <li><strong>Bare schema-bearing notations</strong> (e.g., <code>confluent_avro</code> without <code>:Schema</code>) are rejected — the test runner has no real registry to resolve them against.</li>
 </ul>
+<p><strong>Note:</strong> The test runner supports: <code>string</code>, <code>int</code>, <code>long</code>, <code>boolean</code>, <code>bytes</code>, <code>json</code>, <code>binary</code>, <code>avro</code>, <code>confluent_avro</code>, <code>apicurio_avro</code>.</p>
+<p><code>apicurio_avro</code> is backed by a Confluent-compatible mock registry. It works for logic-level tests, but uses 
+Confluent wire format rather than Apicurio's.</p>
+<p>The following notations are <strong>not yet supported</strong> and will produce a runtime error if used: <code>xml</code>, <code>soap</code>, <code>csv</code>, <code>protobuf</code>, <code>json_schema</code>.</p>
 <h3 id="tests">Tests</h3>
 <p>The <code>tests:</code> map carries one or more test entries. Each key is a stable test identifier matching the same regex as stream keys; the value contains that test's produce data and assertions. Tests run in YAML-defined order; failure in one test does not stop later tests.</p>
 <table>
@@ -2600,6 +2604,10 @@
 </tbody>
 </table>
 <p>When <code>on:</code> is set, <code>records</code> is a list of dicts with <code>key</code>, <code>value</code>, and <code>timestamp</code> fields. When <code>stores:</code> is set, each store is available as a Python variable with the same API as in pipeline functions (e.g. <code>store.get(key)</code>, <code>store.put(key, value)</code>).</p>
+<p><strong>Note:</strong>  Avro output streams must declare the correct <code>valueType</code>"
+<code>records[i]["value"]</code> is a dict only when the stream's <code>valueType</code> in <code>streams:</code> matches what the pipeline actually writes. If the pipeline writes Avro but the stream is declared as <code>valueType: string</code> (or the field is omitted), the runner falls back to <code>StringDeserializer</code>. The raw Confluent wire bytes — magic byte + 4-byte schema ID + Avro payload — are returned as a string, and indexing into <code>records[i]["value"]</code> with a field name fails with <code>TypeError: string indices must be integers</code>.</p>
+<div class="highlight"><pre><span></span><code>Always declare `valueType: &quot;avro:SchemaName&quot;` (or `confluent_avro:SchemaName`) in `streams:` for any output topic that your pipeline serializes as Avro, and provide the matching `.avsc` file via `schemaDirectory`.
+</code></pre></div>
 <h3 id="reporting">Reporting</h3>
 <p>Each test result is labeled <code>&lt;suite&gt; › &lt;test&gt;</code> where <code>&lt;suite&gt;</code> is the file's <code>name:</code> (or the filename without extension) and <code>&lt;test&gt;</code> is the test entry's <code>description:</code> (or the test key if absent). Suite-level parse failures (missing <code>definition:</code>, malformed YAML, undefined stream references, etc.) are reported as a single ERROR result for the whole suite.</p>
 <h2 id="example-testing-a-filter-pipeline">Example: Testing a Filter Pipeline</h2>
