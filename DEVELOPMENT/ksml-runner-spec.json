@@ -6,18 +6,15 @@
       "properties" : {
         "enabled" : {
           "type" : "boolean",
-          "description" : "Toggle to activate the creation of the application server. Default is false",
-          "default" : false
+          "description" : "Toggle to activate the creation of the application server. Default is false"
         },
         "host" : {
           "type" : "string",
-          "description" : "Determines on which hostname/ip address the application server listener is created. Default is IP address for all networks '0.0.0.0'",
-          "default" : "0.0.0.0"
+          "description" : "Determines on which hostname/ip address the application server listener is created. Default is IP address for all networks '0.0.0.0'"
         },
         "port" : {
           "type" : "integer",
           "description" : "Determines on which port the application server is listening. Default is 8080",
-          "default" : 8080,
           "minimum" : 1,
           "maximum" : 65535
         }
@@ -54,13 +51,11 @@
         },
         "log" : {
           "type" : "boolean",
-          "description" : "Toggle to enable logging the error. Defaults to true.",
-          "default" : true
+          "description" : "Toggle to enable logging the error. Defaults to true."
         },
         "logPayload" : {
           "type" : "boolean",
-          "description" : "Toggle to add the payload which caused the error to the logged output. Defaults to false.",
-          "default" : false
+          "description" : "Toggle to add the payload which caused the error to the logged output. Defaults to false."
         },
         "loggerName" : {
           "type" : "string",
@@ -89,21 +84,18 @@
         },
         "createStorageDirectory" : {
           "type" : "boolean",
-          "description" : "Create storage directory if it doesn't exist. Default value is false",
-          "default" : false
+          "description" : "Create storage directory if it doesn't exist. Default value is false"
         },
         "definitions" : {
           "$ref" : "#/$defs/KsmlDefinitionMap"
         },
         "enablePipelines" : {
           "type" : "boolean",
-          "description" : "Toggle to enable or disable the creation of pipelines in the KSML definitions. Default value is true",
-          "default" : true
+          "description" : "Toggle to enable or disable the creation of pipelines in the KSML definitions. Default value is true"
         },
         "enableProducers" : {
           "type" : "boolean",
-          "description" : "Toggle to enable or disable the creation of producers in the KSML definitions. Default value is true",
-          "default" : true
+          "description" : "Toggle to enable or disable the creation of producers in the KSML definitions. Default value is true"
         },
         "errorHandling" : {
           "$ref" : "#/$defs/ErrorHandlingConfig",
@@ -122,7 +114,7 @@
         },
         "schemaDirectory" : {
           "type" : "string",
-          "description" : "Directory containing schema files. Defaults to the working directory",
+          "description" : "Directory containing schema files. Defaults to the value of configDirectory",
           "minLength" : 1
         },
         "schemaRegistries" : {
@@ -130,7 +122,7 @@
         },
         "storageDirectory" : {
           "type" : "string",
-          "description" : "Directory for Kafka Streams state stores. Defaults to the working directory",
+          "description" : "Directory for Kafka Streams state stores. Defaults to the System temp directory",
           "minLength" : 1
         }
       },
@@ -207,19 +199,16 @@
         },
         "enabled" : {
           "type" : "boolean",
-          "description" : "Toggle to activate the creation Prometheus metrics exporter. Default is false",
-          "default" : false
+          "description" : "Toggle to activate the creation Prometheus metrics exporter. Default is false"
         },
         "host" : {
           "type" : "string",
           "description" : "Determines on which hostname/ip address the Prometheus metrics exporter listener is created. Default is IP address for all networks '0.0.0.0'",
-          "default" : "0.0.0.0",
           "minLength" : 1
         },
         "port" : {
           "type" : "integer",
           "description" : "Determines on which port the Prometheus metrics exporter is listening. Default is 9999",
-          "default" : 9999,
           "minimum" : 1,
           "maximum" : 65535
         }
@@ -233,33 +222,27 @@
       "properties" : {
         "allowCreateProcess" : {
           "type" : "boolean",
-          "description" : "Allow Python code to execute external processes. Default is false.",
-          "default" : false
+          "description" : "Allow Python code to execute external processes. Default is false."
         },
         "allowCreateThread" : {
           "type" : "boolean",
-          "description" : "Allow Python code to create new Java threads. Default is false.",
-          "default" : false
+          "description" : "Allow Python code to create new Java threads. Default is false."
         },
         "allowHostFileAccess" : {
           "type" : "boolean",
-          "description" : "Allow Python code to access host file system. Default is false.",
-          "default" : false
+          "description" : "Allow Python code to access host file system. Default is false."
         },
         "allowHostSocketAccess" : {
           "type" : "boolean",
-          "description" : "Allow Python code to open network sockets. Default is false.",
-          "default" : false
+          "description" : "Allow Python code to open network sockets. Default is false."
         },
         "allowNativeAccess" : {
           "type" : "boolean",
-          "description" : "Allow Graal native access / JNI. Default is false.",
-          "default" : false
+          "description" : "Allow Graal native access / JNI. Default is false."
         },
         "inheritEnvironmentVariables" : {
           "type" : "boolean",
-          "description" : "Inherit JVM process environment in Python context. Default is false.",
-          "default" : false
+          "description" : "Inherit JVM process environment in Python context. Default is false."
         },
         "modulePath" : {
           "type" : "string",
