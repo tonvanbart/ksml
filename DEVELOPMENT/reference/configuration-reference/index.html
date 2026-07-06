@@ -16,7 +16,7 @@
         <link rel="prev" href="../state-store-reference/">
       
       
-        <link rel="next" href="../../release-notes/">
+        <link rel="next" href="../metrics-reference/">
       
       
         
@@ -2073,6 +2073,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../metrics-reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Metrics Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2744,7 +2772,7 @@ server is present. In production using a schema server is preferred.</p>
 <tr>
 <td><code>handler</code></td>
 <td>String</td>
-<td>stop</td>
+<td>stopOnFail</td>
 <td>Error handling strategy (<code>continueOnFail</code>, <code>stopOnFail</code>, <code>retryOnFail</code>)</td>
 </tr>
 </tbody>
@@ -2972,8 +3000,8 @@ The previous behavior is obtained by overriding the new default as follows:
 <div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="w">    </span><span class="nt">notations</span><span class="p">:</span>
 <a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="w">      </span><span class="nt">avro</span><span class="p">:</span>
 <a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">apicurio_avro</span>
-<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="w">          </span><span class="l l-Scalar l-Scalar-Plain">config</span><span class="p p-Indicator">:</span>
-<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="w">            </span><span class="nt">apicurio.registry.find-latest</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w">   </span><span class="c1"># restore the old content-based lookup</span>
+<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="w">        </span><span class="nt">config</span><span class="p">:</span>
+<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="w">          </span><span class="nt">apicurio.registry.find-latest</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w">   </span><span class="c1"># restore the old content-based lookup</span>
 </code></pre></div>
 The default was changed due to issue <a href="https://github.com/Axual/ksml/issues/290">#290</a>.</p>
 </div>
