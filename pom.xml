@@ -137,6 +137,9 @@
         <maven.javadoc.plugin.version>3.12.0</maven.javadoc.plugin.version>
         <maven.license.plugin.version>2.7.1</maven.license.plugin.version>
         <maven.surefire.plugin.version>3.5.6</maven.surefire.plugin.version>
+        <pitest.plugin.version>1.19.1</pitest.plugin.version>
+        <pitest.junit5.plugin.version>1.2.2</pitest.junit5.plugin.version>
+        <pitest.threads>4</pitest.threads>
         <maven.resources.plugin.version>3.5.0</maven.resources.plugin.version>
         <maven.versions.plugin.version>2.21.0</maven.versions.plugin.version>
 
@@ -822,6 +825,26 @@
                         </execution>
                     </executions>
                 </plugin>
+                <plugin>
+                    <groupId>org.pitest</groupId>
+                    <artifactId>pitest-maven</artifactId>
+                    <version>${pitest.plugin.version}</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.pitest</groupId>
+                            <artifactId>pitest-junit5-plugin</artifactId>
+                            <version>${pitest.junit5.plugin.version}</version>
+                        </dependency>
+                    </dependencies>
+                    <configuration>
+                        <outputFormats>
+                            <outputFormat>HTML</outputFormat>
+                        </outputFormats>
+                        <timestampedReports>false</timestampedReports>
+                        <threads>${pitest.threads}</threads>
+                    </configuration>
+                </plugin>
+
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-enforcer-plugin</artifactId>

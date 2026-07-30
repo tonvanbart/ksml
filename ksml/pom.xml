@@ -230,6 +230,31 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
             </plugin>
+
+            <plugin>
+                <groupId>org.pitest</groupId>
+                <artifactId>pitest-maven</artifactId>
+                <configuration>
+                    <targetClasses>
+                        <param>io.axual.ksml.*</param>
+                    </targetClasses>
+                    <targetTests>
+                        <param>io.axual.ksml.*</param>
+                    </targetTests>
+                    <!-- io.axual.ksml.python tests each spin up a fresh GraalVM Python context; re-running
+                         them per mutant repeatedly exhausted forked-JVM memory (MEMORY_ERROR/TIMED_OUT).
+                         Excluded from both sides: not worth mutating, and too expensive as covering tests. -->
+                    <excludedClasses>
+                        <param>io.axual.ksml.python.*</param>
+                    </excludedClasses>
+                    <excludedTestClasses>
+                        <param>io.axual.ksml.python.*</param>
+                    </excludedTestClasses>
+                    <jvmArgs>
+                        <value>-Xmx2g</value>
+                    </jvmArgs>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 </project>
