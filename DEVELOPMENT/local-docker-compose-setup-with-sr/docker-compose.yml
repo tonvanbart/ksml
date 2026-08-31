@@ -57,7 +57,7 @@ services:
 
 
   schema_registry:
-    image: apicurio/apicurio-registry:3.0.2
+    image: apicurio/apicurio-registry:3.3.0
     hostname: schema-registry
     depends_on:
       broker:
@@ -112,4 +112,6 @@ services:
     command: "bash -c 'echo Creating topics for data formats tutorial... && \
                        /opt/kafka/bin/kafka-topics.sh --create --if-not-exists --bootstrap-server broker:9093 --partitions 1 --replication-factor 1 --topic sensor_data_avro && \
                        /opt/kafka/bin/kafka-topics.sh --create --if-not-exists --bootstrap-server broker:9093 --partitions 1 --replication-factor 1 --topic sensor_data_json && \
-                       /opt/kafka/bin/kafka-topics.sh --create --if-not-exists --bootstrap-server broker:9093 --partitions 1 --replication-factor 1 --topic sensor_data_transformed'"
+                       /opt/kafka/bin/kafka-topics.sh --create --if-not-exists --bootstrap-server broker:9093 --partitions 1 --replication-factor 1 --topic sensor_data_transformed && \
+                       /opt/kafka/bin/kafka-topics.sh --create --if-not-exists --bootstrap-server broker:9093 --partitions 1 --replication-factor 1 --topic logical_types_avro && \
+                       /opt/kafka/bin/kafka-topics.sh --create --if-not-exists --bootstrap-server broker:9093 --partitions 1 --replication-factor 1 --topic logical_types_json'"
