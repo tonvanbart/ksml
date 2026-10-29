@@ -4894,6 +4894,7 @@ available in your function code without needing to declare them:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1"># The custom parameter is passed along with built-in ones</span>
 <a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="n">configurable_logger</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s2">"DEBUG"</span><span class="p">)</span>
 </code></pre></div>
+<p>Custom parameters come right after the built-in ones. Only the optional built-in parameter <code>mappedKey</code> (in a <code>valueJoiner</code>) comes last, after the custom parameters.</p>
 <h3 id="parameter-definition-structure">Parameter Definition Structure</h3>
 <p>When defining custom parameters:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="nt">parameters</span><span class="p">:</span>
@@ -4995,7 +4996,7 @@ parameters like <code>key</code> and <code>value</code> are still available in y
 </tr>
 <tr>
 <td><a href="#foreignkeyextractor">foreignKeyExtractor</a></td>
-<td>Extract a key from a join table's record</td>
+<td>Get the key of the other table from a table value</td>
 <td>join, leftJoin</td>
 </tr>
 <tr>
@@ -6018,7 +6019,9 @@ previously separate sessions. This example demonstrates user activity tracking w
 </ul>
 <h2 id="special-purpose-functions">Special Purpose Functions</h2>
 <h3 id="foreignkeyextractor">foreignKeyExtractor</h3>
-<p>Extracts a key from a join table's record. Used during join operations to determine which records to join.</p>
+<p>Gets a value of the input table and returns the key of the other table to join with. Used in a <code>join</code> or <code>leftJoin</code>
+between two tables, when the join key is in the value instead of the record key. Both sides must be tables: with a
+stream as input, KSML stops with an error. Add <code>toTable</code> before the join to turn a stream into a table.</p>
 <h4 id="parameters_11">Parameters</h4>
 <table>
 <thead>
@@ -6176,25 +6179,31 @@ previously separate sessions. This example demonstrates user activity tracking w
 <a id="__codelineno-29-61" name="__codelineno-29-61" href="#__codelineno-29-61"></a><span class="w">  </span><span class="nt">enrich_orders</span><span class="p">:</span>
 <a id="__codelineno-29-62" name="__codelineno-29-62" href="#__codelineno-29-62"></a><span class="w">    </span><span class="nt">from</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">orders_input</span>
 <a id="__codelineno-29-63" name="__codelineno-29-63" href="#__codelineno-29-63"></a><span class="w">    </span><span class="nt">via</span><span class="p">:</span>
-<a id="__codelineno-29-64" name="__codelineno-29-64" href="#__codelineno-29-64"></a><span class="w">      </span><span class="c1"># Join orders table with customers table using foreignKeyExtractor</span>
-<a id="__codelineno-29-65" name="__codelineno-29-65" href="#__codelineno-29-65"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">join</span>
-<a id="__codelineno-29-66" name="__codelineno-29-66" href="#__codelineno-29-66"></a><span class="w">        </span><span class="nt">table</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">customers_table</span>
-<a id="__codelineno-29-67" name="__codelineno-29-67" href="#__codelineno-29-67"></a><span class="w">        </span><span class="nt">foreignKeyExtractor</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">extract_customer_id</span><span class="w">  </span><span class="c1"># Extracts customer_id from order</span>
-<a id="__codelineno-29-68" name="__codelineno-29-68" href="#__codelineno-29-68"></a><span class="w">        </span><span class="nt">valueJoiner</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">join_order_customer</span>
-<a id="__codelineno-29-69" name="__codelineno-29-69" href="#__codelineno-29-69"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">peek</span>
-<a id="__codelineno-29-70" name="__codelineno-29-70" href="#__codelineno-29-70"></a><span class="w">        </span><span class="nt">forEach</span><span class="p">:</span>
-<a id="__codelineno-29-71" name="__codelineno-29-71" href="#__codelineno-29-71"></a><span class="w">          </span><span class="nt">code</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
-<a id="__codelineno-29-72" name="__codelineno-29-72" href="#__codelineno-29-72"></a><span class="w">            </span><span class="no">log.info("Enriched order: {} for customer: {}", </span>
-<a id="__codelineno-29-73" name="__codelineno-29-73" href="#__codelineno-29-73"></a><span class="w">                     </span><span class="no">value.get("order_id"), </span>
-<a id="__codelineno-29-74" name="__codelineno-29-74" href="#__codelineno-29-74"></a><span class="w">                     </span><span class="no">value.get("customer", {}).get("name"))</span>
-<a id="__codelineno-29-75" name="__codelineno-29-75" href="#__codelineno-29-75"></a><span class="w">    </span><span class="nt">to</span><span class="p">:</span>
-<a id="__codelineno-29-76" name="__codelineno-29-76" href="#__codelineno-29-76"></a><span class="w">      </span><span class="nt">topic</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">enriched_orders</span>
-<a id="__codelineno-29-77" name="__codelineno-29-77" href="#__codelineno-29-77"></a><span class="w">      </span><span class="nt">keyType</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">string</span><span class="w">  </span><span class="c1"># Still keyed by order_id</span>
-<a id="__codelineno-29-78" name="__codelineno-29-78" href="#__codelineno-29-78"></a><span class="w">      </span><span class="nt">valueType</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">json</span>
+<a id="__codelineno-29-64" name="__codelineno-29-64" href="#__codelineno-29-64"></a><span class="w">      </span><span class="c1"># A foreign-key join needs a table on both sides, so turn the orders into a table first</span>
+<a id="__codelineno-29-65" name="__codelineno-29-65" href="#__codelineno-29-65"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">toTable</span>
+<a id="__codelineno-29-66" name="__codelineno-29-66" href="#__codelineno-29-66"></a><span class="w">      </span><span class="c1"># Join orders table with customers table using foreignKeyExtractor</span>
+<a id="__codelineno-29-67" name="__codelineno-29-67" href="#__codelineno-29-67"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">join</span>
+<a id="__codelineno-29-68" name="__codelineno-29-68" href="#__codelineno-29-68"></a><span class="w">        </span><span class="nt">table</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">customers_table</span>
+<a id="__codelineno-29-69" name="__codelineno-29-69" href="#__codelineno-29-69"></a><span class="w">        </span><span class="nt">foreignKeyExtractor</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">extract_customer_id</span><span class="w">  </span><span class="c1"># Extracts customer_id from order</span>
+<a id="__codelineno-29-70" name="__codelineno-29-70" href="#__codelineno-29-70"></a><span class="w">        </span><span class="nt">valueJoiner</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">join_order_customer</span>
+<a id="__codelineno-29-71" name="__codelineno-29-71" href="#__codelineno-29-71"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">toStream</span>
+<a id="__codelineno-29-72" name="__codelineno-29-72" href="#__codelineno-29-72"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">peek</span>
+<a id="__codelineno-29-73" name="__codelineno-29-73" href="#__codelineno-29-73"></a><span class="w">        </span><span class="nt">forEach</span><span class="p">:</span>
+<a id="__codelineno-29-74" name="__codelineno-29-74" href="#__codelineno-29-74"></a><span class="w">          </span><span class="nt">code</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<a id="__codelineno-29-75" name="__codelineno-29-75" href="#__codelineno-29-75"></a><span class="w">            </span><span class="no"># A deleted customer, or a changed customer_id, sends a null value</span>
+<a id="__codelineno-29-76" name="__codelineno-29-76" href="#__codelineno-29-76"></a><span class="w">            </span><span class="no">if value is not None:</span>
+<a id="__codelineno-29-77" name="__codelineno-29-77" href="#__codelineno-29-77"></a><span class="w">              </span><span class="no">log.info("Enriched order: {} for customer: {}",</span>
+<a id="__codelineno-29-78" name="__codelineno-29-78" href="#__codelineno-29-78"></a><span class="w">                       </span><span class="no">value.get("order_id"),</span>
+<a id="__codelineno-29-79" name="__codelineno-29-79" href="#__codelineno-29-79"></a><span class="w">                       </span><span class="no">value.get("customer", {}).get("name"))</span>
+<a id="__codelineno-29-80" name="__codelineno-29-80" href="#__codelineno-29-80"></a><span class="w">    </span><span class="nt">to</span><span class="p">:</span>
+<a id="__codelineno-29-81" name="__codelineno-29-81" href="#__codelineno-29-81"></a><span class="w">      </span><span class="nt">topic</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">enriched_orders</span>
+<a id="__codelineno-29-82" name="__codelineno-29-82" href="#__codelineno-29-82"></a><span class="w">      </span><span class="nt">keyType</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">string</span><span class="w">  </span><span class="c1"># Still keyed by order_id</span>
+<a id="__codelineno-29-83" name="__codelineno-29-83" href="#__codelineno-29-83"></a><span class="w">      </span><span class="nt">valueType</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">json</span>
 </code></pre></div>
 </details>
 <p>The foreignKeyExtractor enables table joins where the join key is embedded within the record value rather than being the
-record key. This example demonstrates order enrichment by joining with customer data using a foreign key relationship.</p>
+record key. This example demonstrates order enrichment by joining with customer data using a foreign key relationship.
+The orders arrive as a stream, so the pipeline turns them into a table with <code>toTable</code> first.</p>
 <p><strong>Example</strong></p>
 <p>This example simulates an e-commerce system enriching orders with customer data:</p>
 <ul>
@@ -6714,7 +6723,12 @@ data into formatted reports for monitoring and debugging.</p>
 <tr>
 <td>value</td>
 <td>Any</td>
-<td>The value of the record being partitioned</td>
+<td>The value of the record being partitioned. <code>None</code> in a foreign-key join</td>
+</tr>
+<tr>
+<td>headers</td>
+<td>List</td>
+<td>The record headers, as a list of <code>{"key": ..., "value": ...}</code> like in <code>metadataTransformer</code></td>
 </tr>
 <tr>
 <td>numPartitions</td>
@@ -6724,7 +6738,7 @@ data into formatted reports for monitoring and debugging.</p>
 </tbody>
 </table>
 <h4 id="return-value_16">Return Value</h4>
-<p>An integer representing the partition number (0 to numPartitions-1) where the record should be sent</p>
+<p>An integer representing the partition number (0 to numPartitions-1) where the record should be sent, or a list of partition numbers to send it to several partitions. An empty list drops the record.</p>
 <h4 id="example_14">Example</h4>
 <blockquote>
 <p><strong>Note:</strong></p>
@@ -6946,7 +6960,7 @@ data into formatted reports for monitoring and debugging.</p>
 <h3 id="valuejoiner">valueJoiner</h3>
 <p>Combines values from two streams or tables during join operations, creating enriched records that contain data from both
 sources. The function must handle cases where one or both values might be null, depending on the join type (inner, left,
-outer). This function has access to the join key for context-aware value combination.</p>
+outer).</p>
 <h4 id="parameters_17">Parameters</h4>
 <table>
 <thead>
@@ -6960,7 +6974,7 @@ outer). This function has access to the join key for context-aware value combina
 <tr>
 <td>key</td>
 <td>Any</td>
-<td>The join key used to match records</td>
+<td>The key of the record. In a globalTable join, the key of the stream record. <code>None</code> in a join between two tables and in a stream-stream <code>outerJoin</code></td>
 </tr>
 <tr>
 <td>value1</td>
@@ -6971,6 +6985,11 @@ outer). This function has access to the join key for context-aware value combina
 <td>value2</td>
 <td>Any</td>
 <td>The value from the second stream/table</td>
+</tr>
+<tr>
+<td>mappedKey</td>
+<td>Any</td>
+<td>In a globalTable join, the key that the <code>mapper</code> returned. <code>None</code> in all other joins</td>
 </tr>
 </tbody>
 </table>
@@ -7633,7 +7652,7 @@ relationship helps you leverage Kafka Streams documentation and concepts:</p>
 </tr>
 <tr>
 <td>valueJoiner</td>
-<td><code>ValueJoiner&lt;V1,V2,VR&gt;</code></td>
+<td><code>ValueJoiner</code>, <code>ValueJoinerWithKey</code> or <code>ValueJoinerWithStreamAndMappedKey</code>, by join type</td>
 <td>Join values from two streams</td>
 </tr>
 </tbody>
