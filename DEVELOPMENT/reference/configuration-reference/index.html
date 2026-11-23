@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.1">
     
     
       
@@ -31,7 +31,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.57a0d79d.min.css">
       
       
 
@@ -2772,6 +2772,9 @@ parse stops startup as well, rather than being skipped. See
 <a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">  </span><span class="nt">storageDirectory</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/tmp/kafka-streams</span>
 <a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">  </span><span class="nt">createStorageDirectory</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
 </code></pre></div>
+<p><code>storageDirectory</code> is the Kafka Streams <code>state.dir</code>. Persistent state stores keep their RocksDB state there, so in a
+container put it on a volume that is kept between restarts. Otherwise the stores are restored from their changelog
+topics after every restart.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p><code>schemaDirectory</code> is mainly intended for scenarios where your pipeline uses schemas but no schema
@@ -2983,7 +2986,7 @@ server is present. In production using a schema server is preferred.</p>
 <td><code>allowNativeAccess</code></td>
 <td>Boolean</td>
 <td>false</td>
-<td>Allow Graal native access / JNI</td>
+<td>Allow Graal native access / JNI. Only one Python context can load C extension modules, see below.</td>
 </tr>
 <tr>
 <td><code>allowCreateProcess</code></td>
@@ -3021,6 +3024,7 @@ server is present. In production using a schema server is preferred.</p>
 <a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="w">    </span><span class="nt">inheritEnvironmentVariables</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
 <a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a><span class="w">    </span><span class="nt">modulePath</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/ksml</span>
 </code></pre></div>
+<p>KSML runs Python 3.13 (GraalPy 25.5). With <code>allowNativeAccess: true</code>, Python code can load C extension modules, such as <code>ctypes</code>, <code>sqlite3</code> and <code>termios</code> (which <code>getpass</code>, <code>tty</code> and <code>pty</code> load). Only one Python context per KSML process can do this. KSML creates one context for the pipelines of a definition file and one for its producers, and both load all functions of the file. A second context that imports such a module gets a <code>SystemError</code>. In <code>globalCode</code>, this stops KSML at startup. Which context is first does not follow the order in the runner config.</p>
 <h3 id="schema-registry-configuration">Schema Registry Configuration</h3>
 <p>Configure connections to schema registries:</p>
 <h4 id="basic-configuration">Basic Configuration</h4>
@@ -3190,7 +3194,8 @@ The default was changed due to issue <a href="https://github.com/Axual/ksml/issu
 </code></pre></div>
 <h2 id="kafka-configuration-section">Kafka Configuration Section</h2>
 <p>The <code>kafka</code> section contains standard Kafka client configuration properties. All Kafka Streams and Kafka client
-properties are supported.</p>
+properties are supported, except <code>state.dir</code>: KSML sets it from <code>storageDirectory</code> in the <code>ksml</code> section (see
+<a href="#directory-configuration">Directory Configuration</a>), and logs a warning when the <code>kafka</code> section sets another value.</p>
 <h3 id="essential-properties">Essential Properties</h3>
 <table>
 <thead>
@@ -3254,6 +3259,12 @@ properties are supported.</p>
 <td>String</td>
 <td>1</td>
 <td>Producer acknowledgment mode</td>
+</tr>
+<tr>
+<td><code>dsl.store.format</code></td>
+<td>String</td>
+<td>DEFAULT</td>
+<td><code>HEADERS</code> builds the declared stores that support it as headers-aware stores (persistent; for key-value and window stores also timestamped and not versioned). See <a href="../state-store-reference/#store-format">Store Format</a></td>
 </tr>
 </tbody>
 </table>
@@ -3482,10 +3493,10 @@ properties are supported.</p>
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"default": "latest", "provider": "mike"}}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["content.code.copy"], "search": "../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"default": "latest", "provider": "mike"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../../assets/javascripts/bundle.a5f9d56c.min.js"></script>
       
     
   </body>
